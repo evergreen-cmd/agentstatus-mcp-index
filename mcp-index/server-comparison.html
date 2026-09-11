@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" data-wash="navy">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MCP Index · Host compatibility comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --surface-cream: 40 33% 97%;
+      --border: 214.3 31.8% 91.4%;
+      --radius: 0.5rem;
+      --logo-orange: 24.6 95% 53.1%;
+      --fail: 24.6 95% 53.1%;
+      --ok: 188 38% 38%;
+      --chart-1: 40 24% 97.5%;
+      --chart-2: 214 20% 72%;
+      --chart-3: 221.2 83.2% 53.3%;
+      --chart-4: 188 38% 38%;
+      --chart-8: 18 48% 38%;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      min-height: 100vh;
+      padding: 1.25rem 1.25rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .chooser { max-width: 1000px; margin: 0 auto 1.1rem; }
+    .chooser h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.03em; }
+    .chooser p { margin-top: 0.25rem; font-size: 12px; line-height: 1.4; opacity: 0.7; max-width: 42rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; align-items: center; }
+    .row span { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.65; margin-right: 0.2rem; }
+    .row button {
+      font-family: inherit; font-size: 12px; font-weight: 700;
+      padding: 0.4rem 0.7rem; border-radius: var(--radius); border: 1px solid; cursor: pointer;
+    }
+    .nav-link { margin-top: 0.85rem; font-size: 12px; }
+    .nav-link a { font-weight: 700; }
+
+    .stage { max-width: 1000px; margin: 0 auto; }
+    .frame { position: relative; overflow: hidden; border-radius: calc(var(--radius) * 3); padding: 1.15rem; }
+    .wash { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .wash__base { position: absolute; inset: 0; }
+    .wash__img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      transform: scale(1.08) rotate(-2deg); opacity: 0.92;
+    }
+    .wash__veil { position: absolute; inset: 0; }
+    .sheet { position: relative; z-index: 1; border-radius: calc(var(--radius) * 2.5); padding: 1.45rem 1.5rem 1.25rem; }
+
+    html[data-wash="navy"] body { background: hsl(var(--brand-navy-deep)); color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .chooser h1 { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .nav-link a { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .row button { background: hsl(var(--brand-navy)); border-color: hsl(var(--ink-cream) / 0.2); color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .row button.is-on { background: hsl(var(--logo-orange)); border-color: hsl(var(--logo-orange)); color: hsl(var(--brand-navy-deep)); }
+    html[data-wash="navy"] .frame { border: 1px solid hsl(var(--brand-navy-deep)); background: hsl(var(--brand-navy-deep)); }
+    html[data-wash="navy"] .wash__base { background: hsl(var(--brand-navy)); }
+    html[data-wash="navy"] .wash__img { mix-blend-mode: soft-light; }
+    html[data-wash="navy"] .wash__img--2 { display: block; transform: scale(1.12) rotate(1.5deg); opacity: 0.45; mix-blend-mode: overlay; }
+    html[data-wash="navy"] .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--brand-navy) / 0.12) 0%, transparent 30%, transparent 55%, hsl(var(--brand-navy-deep) / 0.88) 100%),
+        linear-gradient(90deg, hsl(var(--brand-navy-deep) / 0.45) 0%, transparent 40%, transparent 70%, hsl(var(--brand-navy-deep) / 0.3) 100%);
+    }
+    html[data-wash="navy"] .sheet { background: transparent; border: none; color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .logo--light { display: none; }
+    html[data-wash="navy"] .logo--dark { display: block; }
+    html[data-wash="navy"] .rule { border-color: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .footer a { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .plot { border-color: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .h-row { border-color: hsl(var(--ink-cream) / 0.1); }
+
+    html[data-wash="light"] body { background: hsl(var(--surface-cream)); color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .nav-link a { color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .row button { background: hsl(0 0% 100%); border-color: hsl(var(--border)); color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .row button.is-on { background: hsl(var(--brand-navy)); border-color: hsl(var(--brand-navy)); color: hsl(var(--ink-cream)); }
+    html[data-wash="light"] .frame { border: 1px solid hsl(var(--brand-navy) / 0.12); background: hsl(var(--surface-cream)); padding: 1.3rem; }
+    html[data-wash="light"] .wash__base { background: hsl(var(--surface-cream)); }
+    html[data-wash="light"] .wash__img { mix-blend-mode: multiply; opacity: 0.95; }
+    html[data-wash="light"] .wash__img--2 { display: none; }
+    html[data-wash="light"] .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--surface-cream) / 0.15) 0%, transparent 28%, transparent 62%, hsl(var(--surface-cream) / 0.55) 100%),
+        linear-gradient(90deg, hsl(var(--surface-cream) / 0.3) 0%, transparent 40%, transparent 70%, hsl(var(--surface-cream) / 0.2) 100%);
+    }
+    html[data-wash="light"] .sheet {
+      background: hsl(var(--surface-cream) / 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid hsl(var(--brand-navy) / 0.1);
+      box-shadow: 0 1px 0 hsl(0 0% 100% / 0.65) inset, 0 24px 48px -28px hsl(var(--brand-navy) / 0.28);
+      color: hsl(var(--brand-navy));
+    }
+    html[data-wash="light"] .logo--dark { display: none; }
+    html[data-wash="light"] .logo--light { display: block; }
+    html[data-wash="light"] .rule { border-color: hsl(var(--brand-navy) / 0.12); }
+    html[data-wash="light"] .footer a { color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .plot { border-color: hsl(var(--brand-navy) / 0.12); }
+    html[data-wash="light"] .h-row { border-color: hsl(var(--brand-navy) / 0.08); }
+    html[data-wash="light"] .bar--1 { box-shadow: inset 0 0 0 1px hsl(var(--brand-navy) / 0.15); }
+
+    .top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+      margin-bottom: 1rem; padding-bottom: 0.95rem; border-bottom: 1px solid;
+    }
+    .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; margin-bottom: 0.45rem; }
+    h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; }
+    .sub { margin-top: 0.4rem; font-size: 13px; line-height: 1.4; max-width: 34rem; opacity: 0.75; }
+    .meta { margin-top: 0.35rem; font-size: 12px; opacity: 0.65; }
+    .brand img { height: 32px; width: auto; display: block; }
+
+    .hint {
+      font-size: 12px; opacity: 0.75; margin-bottom: 0.85rem;
+    }
+    .hint strong { color: hsl(var(--logo-orange)); font-weight: 700; opacity: 1; }
+
+    /* Horizontal bars — same language as Cycle 12 vertical bars, laid on X */
+    .plot {
+      border-bottom: 1px solid;
+      padding: 0.15rem 0 0.35rem;
+    }
+    .h-row {
+      display: grid;
+      grid-template-columns: 8.5rem 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.55rem 0;
+      border-top: 1px solid;
+    }
+    .h-row:first-child { border-top: none; }
+    @media (max-width: 640px) {
+      .h-row { grid-template-columns: 1fr; gap: 0.35rem; }
+    }
+    .h-row__label { min-width: 0; }
+    .h-row__name {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .h-row__name.is-alert { color: hsl(var(--fail)); }
+    .h-row__detail {
+      margin-top: 0.18rem;
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.68;
+      line-height: 1.3;
+    }
+    .h-row__plot {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+    .bar-slot {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+    }
+    .bar {
+      height: 28px;
+      min-width: 3px;
+      border-radius: 2px 4px 4px 2px;
+    }
+    .bar--1 { background: hsl(var(--chart-1)); }
+    .bar--2 { background: hsl(var(--chart-2)); }
+    .bar--3 { background: hsl(var(--chart-3)); }
+    .bar--4 { background: hsl(var(--chart-4)); }
+    .bar--8 { background: hsl(var(--chart-8)); }
+    .bar--fail { background: hsl(var(--fail)); }
+    .val {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .val.is-alert { color: hsl(var(--fail)); }
+
+    .footer {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.65rem;
+      margin-top: 1.05rem; padding-top: 0.85rem; border-top: 1px solid;
+      font-size: 12px; opacity: 0.72; line-height: 1.4;
+    }
+    .footer a { font-weight: 700; text-decoration: none; opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="chooser">
+    <h1>W2 comparison · Host compatibility</h1>
+    <p>3–5 named servers, same metric. Feeds Host Compatibility Index posts. Demo data.</p>
+    <div class="row" role="group" aria-label="Wash">
+      <span>Wash</span>
+      <button type="button" class="is-on" data-wash-btn="navy">Navy</button>
+      <button type="button" data-wash-btn="light">Light (Abstract)</button>
+    </div>
+    <p class="nav-link"><a href="server-scorecard.html">← Server scorecard</a></p>
+  </div>
+
+  <div class="stage">
+    <div class="frame">
+      <div class="wash" aria-hidden="true">
+        <div class="wash__base"></div>
+        <img class="wash__img" src="hero-wash-site.jpg" alt="" />
+        <img class="wash__img wash__img--2" src="hero-wash-site.jpg" alt="" />
+        <div class="wash__veil"></div>
+      </div>
+
+      <article class="sheet">
+        <header class="top rule">
+          <div>
+            <div class="title-row">
+              <div>
+                <h1>Hosts that cleared tools/call</h1>
+                <p class="sub">Share of 18 hosts where tools/call returned a usable tool result. Same residential suite, 15 Sep 2026.</p>
+                <p class="meta">Higher is better</p>
+              </div>
+            </div>
+          </div>
+          <div class="brand">
+            <img class="logo--dark" src="agentstatus-wordmark-white.svg" alt="AgentStatus" />
+            <img class="logo--light" src="agentstatus-wordmark.svg" alt="AgentStatus" />
+          </div>
+        </header>
+
+        <p class="hint">Firecrawl cleared <strong>0 / 18</strong>. Linear cleared <strong>18 / 18</strong>.</p>
+
+        <div class="plot" id="list" aria-label="Horizontal bar comparison"></div>
+
+        <footer class="footer rule">
+          <p>Independent · same probe path on every host. Free account shows per-host logs.</p>
+          <p><a href="https://agentstatus.dev">agentstatus.dev</a></p>
+        </footer>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    const rows = [
+      { name: "Linear", detail: "18/18 invoke ok · HTTP", pass: 18, color: 1 },
+      { name: "Notion", detail: "17/18 · 1 partial on Slack", pass: 17, color: 2 },
+      { name: "Stripe", detail: "15/18 · auth flake on 3 hosts", pass: 15, color: 3 },
+      { name: "Composio", detail: "9/18 · discover ok, invoke mixed", pass: 9, color: 4 },
+      { name: "Firecrawl", detail: "0/18 · tools/call 401 on scrape", pass: 0, color: "fail", alert: true },
+    ];
+
+    const list = document.getElementById("list");
+    rows.forEach((r) => {
+      const pct = Math.max(r.pass === 0 ? 0 : 2.5, (r.pass / 18) * 100);
+      const el = document.createElement("div");
+      el.className = "h-row";
+      el.innerHTML =
+        '<div class="h-row__label">' +
+        '<div class="h-row__name' + (r.alert ? " is-alert" : "") + '">' + r.name + "</div>" +
+        '<div class="h-row__detail">' + r.detail + "</div>" +
+        "</div>" +
+        '<div class="h-row__plot">' +
+        '<div class="bar-slot">' +
+        (r.pass > 0
+          ? '<div class="bar bar--' + r.color + '" style="width:' + pct + '%"></div>'
+          : '<div class="bar bar--fail" style="width:3px;opacity:0.85" title="0 of 18"></div>') +
+        "</div>" +
+        '<div class="val' + (r.alert ? " is-alert" : "") + '">' + r.pass + " / 18</div>" +
+        "</div>";
+      list.appendChild(el);
+    });
+
+    const root = document.documentElement;
+    document.querySelectorAll("[data-wash-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.setAttribute("data-wash", btn.dataset.washBtn);
+        document.querySelectorAll("[data-wash-btn]").forEach((b) => b.classList.toggle("is-on", b === btn));
+      });
+    });
+  </script>
+  <script src="export-png.js"></script>
+</body>
+</html>

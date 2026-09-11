@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" fill="none">
+  <!-- Semgrep-style rings (teal) + wordmark for dark backgrounds -->
+  <g transform="translate(4,6)">
+    <circle cx="14" cy="18" r="11" stroke="#00C39A" stroke-width="3.2" fill="none"/>
+    <circle cx="22" cy="18" r="11" stroke="#00C39A" stroke-width="3.2" fill="none" opacity="0.85"/>
+    <circle cx="18" cy="12" r="11" stroke="#00C39A" stroke-width="3.2" fill="none" opacity="0.7"/>
+  </g>
+  <text x="48" y="32" font-family="Plus Jakarta Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" letter-spacing="-0.04em">Semgrep</text>
+</svg>

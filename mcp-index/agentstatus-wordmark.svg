@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 70" fill="none">
+  <text x="0" y="36" font-family="'DM Sans', system-ui, sans-serif" font-size="32" font-weight="700" fill="#1B2A3D" letter-spacing="-0.5px">agent</text>
+  <text x="116" y="36" font-family="'DM Sans', system-ui, sans-serif" font-size="32" font-weight="400" fill="#1B2A3D" letter-spacing="-0.5px">status</text>
+  <path d="M0 56 L76 56 L84 56 L88 47 L93 65 L98 35 L103 60 L107 50 L114 56 L218 56" stroke="#f47c20" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

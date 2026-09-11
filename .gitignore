@@ -1,0 +1,6 @@
+.DS_Store
+**/.DS_Store
+node_modules/
+*.mov
+mcp-index/_ref-recording.mov
+mcp-index/export-assets.js

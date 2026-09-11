@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MCP Index surfaces · redesign proposal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background: 210 20% 98%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --border: 214.3 31.8% 91.4%;
+      --primary: 221.2 83.2% 53.3%;
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --logo-orange: 24.6 95% 53.1%;
+      --radius: 0.5rem;
+      --chart-1: 40 24% 97.5%;
+      --chart-2: 214 20% 72%;
+      --chart-3: 221.2 83.2% 53.3%;
+      --chart-4: 188 38% 38%;
+      --chart-5: 214 16% 42%;
+      --chart-7: 30 12% 55%;
+      --chart-8: 18 48% 38%;
+      --chart-9: 24.6 95% 53.1%;
+      --chart-10: 45 70% 58%;
+      --status-ok: var(--chart-4);
+      --status-partial: var(--chart-10);
+      --status-warn: var(--chart-9);
+      --status-fail: var(--chart-8);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: hsl(var(--ink-cream));
+      color: hsl(var(--brand-navy));
+      -webkit-font-smoothing: antialiased;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .doc {
+      max-width: 1100px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .doc__brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .doc__brand img { height: 32px; width: auto; }
+
+    .doc h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+    }
+
+    .doc .lede {
+      margin-top: 0.55rem;
+      font-size: 15px;
+      line-height: 1.5;
+      color: hsl(var(--muted-foreground));
+      max-width: 42rem;
+    }
+
+    .principles {
+      margin-top: 1.35rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .principle {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) * 1.5);
+      padding: 0.85rem 0.95rem;
+    }
+
+    .principle strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: hsl(var(--logo-orange));
+      margin-bottom: 0.35rem;
+    }
+
+    .principle p {
+      font-size: 13px;
+      line-height: 1.4;
+      color: hsl(var(--brand-navy) / 0.8);
+    }
+
+    .section-label {
+      max-width: 1100px;
+      margin: 0 auto 0.75rem;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .frame {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto 2.75rem;
+      overflow: hidden;
+      border-radius: calc(var(--radius) * 2.5);
+      border: 1px solid hsl(var(--border));
+      background: hsl(var(--ink-cream));
+    }
+
+    .wash {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wash__base { position: absolute; inset: 0; background: hsl(var(--ink-cream)); }
+
+    .wash__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.06) rotate(-1.5deg);
+      opacity: 0.55;
+      mix-blend-mode: multiply;
+    }
+
+    .wash__veil {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, hsl(var(--ink-cream) / 0.35) 0%, transparent 25%, transparent 70%, hsl(var(--ink-cream) / 0.85) 100%),
+        linear-gradient(90deg, hsl(var(--ink-cream) / 0.4) 0%, transparent 35%, transparent 75%, hsl(var(--ink-cream) / 0.25) 100%);
+    }
+
+    .frame__in {
+      position: relative;
+      z-index: 1;
+      padding: 1.5rem 1.45rem 1.4rem;
+    }
+
+    .mock-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.15rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid hsl(var(--border) / 0.9);
+    }
+
+    .mock-top h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      max-width: 28rem;
+    }
+
+    .mock-top p {
+      margin-top: 0.45rem;
+      font-size: 13px;
+      line-height: 1.45;
+      color: hsl(var(--muted-foreground));
+      max-width: 34rem;
+    }
+
+    .mock-meta {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .mock-meta img { height: 28px; width: auto; display: block; margin-left: auto; }
+
+    .mock-meta span {
+      display: block;
+      margin-top: 0.4rem;
+      font-size: 11px;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 12px;
+      font-weight: 600;
+      color: hsl(var(--brand-navy));
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .dot--ok { background: hsl(var(--status-ok)); }
+    .dot--partial { background: hsl(var(--status-partial)); }
+    .dot--warn { background: hsl(var(--status-warn)); }
+    .dot--fail { background: hsl(var(--status-fail)); }
+
+    /* Matrix */
+    .matrix-wrap {
+      overflow: auto;
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) * 1.5);
+      background: hsl(var(--card) / 0.72);
+      backdrop-filter: blur(4px);
+    }
+
+    table.matrix {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      min-width: 720px;
+      font-size: 12px;
+    }
+
+    .matrix th,
+    .matrix td {
+      padding: 0.45rem 0.4rem;
+      text-align: center;
+      border-bottom: 1px solid hsl(var(--border) / 0.7);
+    }
+
+    .matrix thead th {
+      position: sticky;
+      top: 0;
+      background: hsl(var(--card) / 0.95);
+      z-index: 2;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      height: 7.5rem;
+      vertical-align: bottom;
+      white-space: nowrap;
+    }
+
+    .matrix thead th:first-child {
+      writing-mode: horizontal-tb;
+      transform: none;
+      text-align: left;
+      vertical-align: bottom;
+      color: hsl(var(--brand-navy));
+      font-weight: 700;
+      padding-left: 0.85rem;
+    }
+
+    .matrix tbody th {
+      text-align: left;
+      font-weight: 700;
+      color: hsl(var(--brand-navy));
+      padding-left: 0.85rem;
+      white-space: nowrap;
+      position: sticky;
+      left: 0;
+      background: hsl(var(--card) / 0.96);
+      z-index: 1;
+    }
+
+    .pill {
+      display: inline-block;
+      width: 28px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .pill--ok { background: hsl(var(--status-ok)); }
+    .pill--partial { background: hsl(var(--status-partial)); }
+    .pill--warn { background: hsl(var(--status-warn)); }
+    .pill--fail { background: hsl(var(--status-fail)); }
+
+    .note {
+      margin-top: 0.85rem;
+      font-size: 12px;
+      line-height: 1.45;
+      color: hsl(var(--muted-foreground));
+    }
+
+    /* Tool lists */
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.15rem;
+    }
+
+    @media (max-width: 860px) {
+      .cols { grid-template-columns: 1fr; }
+    }
+
+    .col-head {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .col-head .mark {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: hsl(var(--primary));
+    }
+
+    .col-head .mark--orange { background: hsl(var(--logo-orange)); }
+
+    .col-head h3 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .col-desc {
+      font-size: 12px;
+      line-height: 1.45;
+      color: hsl(var(--muted-foreground));
+      margin-bottom: 0.85rem;
+      max-width: 28rem;
+    }
+
+    .tool {
+      background: hsl(var(--card) / 0.82);
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) * 1.5);
+      padding: 0.85rem 0.95rem;
+      margin-bottom: 0.55rem;
+      backdrop-filter: blur(3px);
+    }
+
+    .tool__top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem 0.5rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .tool__name {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: calc(var(--radius) * 0.75);
+      background: hsl(var(--logo-orange) / 0.12);
+      color: hsl(var(--brand-navy));
+      border: 1px solid hsl(var(--logo-orange) / 0.25);
+    }
+
+    .tool__by {
+      font-size: 12px;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .metrics--one { grid-template-columns: 1fr; }
+
+    .metric label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      margin-bottom: 0.3rem;
+    }
+
+    .metric label b {
+      color: hsl(var(--brand-navy));
+      font-weight: 800;
+    }
+
+    .bar {
+      height: 7px;
+      border-radius: 999px;
+      background: hsl(var(--border));
+      overflow: hidden;
+    }
+
+    .bar > i {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: hsl(var(--chart-2));
+    }
+
+    .bar > i.is-strong {
+      background: hsl(var(--primary));
+    }
+
+    .diff {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.1rem 1.2rem;
+      border-radius: calc(var(--radius) * 1.5);
+      border: 1px dashed hsl(var(--border));
+      background: hsl(var(--card));
+      font-size: 13px;
+      line-height: 1.5;
+      color: hsl(var(--brand-navy) / 0.85);
+    }
+
+    .diff h3 {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 0.45rem;
+    }
+
+    .diff ul { padding-left: 1.1rem; }
+    .diff li { margin: 0.25rem 0; }
+  </style>
+</head>
+<body>
+  <header class="doc">
+    <div class="doc__brand">
+      <img src="agentstatus-wordmark.svg" alt="AgentStatus" width="180" height="55"
+           onerror="this.src='../agentstatus.dev-website/src/assets/agentstatus-wordmark.svg'" />
+      <span class="eyebrow" style="margin:0">Proposal · not shipped</span>
+    </div>
+    <h1>MCP Index surfaces, redesigned</h1>
+    <p class="lede">
+      Same data jobs as your recording — host reach matrix + tool / multi-step lists —
+      under the locked AgentStatus design skill: cream wash, chart-kit status colors,
+      real wordmark, no unexplained chrome, clear legend.
+    </p>
+    <div class="principles">
+      <div class="principle">
+        <strong>Decode in one glance</strong>
+        <p>Legend first. No mystery greens. Status = 4 brand hues with names.</p>
+      </div>
+      <div class="principle">
+        <strong>Wash, don’t wallpaper</strong>
+        <p>Cream Index wash behind content. Cards translucent so texture reads.</p>
+      </div>
+      <div class="principle">
+        <strong>No vibe-stack titles</strong>
+        <p>No all-caps eyebrow over the H1. Meta sits with the wordmark or footer.</p>
+      </div>
+      <div class="principle">
+        <strong>No 100% wallpaper</strong>
+        <p>If every metric is full, show the number — do not tile identical bars.</p>
+      </div>
+    </div>
+  </header>
+
+  <p class="section-label">1 · Host reach matrix</p>
+  <section class="frame" aria-label="Reach matrix proposal">
+    <div class="wash" aria-hidden="true">
+      <div class="wash__base"></div>
+      <img class="wash__img" src="../agentstatus.dev-website/src/assets/mcp-index/hero-wash.jpg" alt="" />
+      <div class="wash__veil"></div>
+    </div>
+    <div class="frame__in">
+      <div class="mock-top">
+        <div>
+          <h2>Where each server was reached</h2>
+          <p>Residential probe from each host. Color is outcome, not brand logo color.</p>
+        </div>
+        <div class="mock-meta">
+          <img src="agentstatus-wordmark.svg" alt="AgentStatus"
+               onerror="this.src='../agentstatus.dev-website/src/assets/agentstatus-wordmark.svg'" />
+          <span>Sep 2026 · MCP Index</span>
+        </div>
+      </div>
+
+      <div class="legend" aria-label="Status legend">
+        <span><i class="dot dot--ok"></i>Reached</span>
+        <span><i class="dot dot--partial"></i>Partial</span>
+        <span><i class="dot dot--warn"></i>Degraded</span>
+        <span><i class="dot dot--fail"></i>Failed</span>
+      </div>
+
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Server</th>
+              <th>ChatGPT</th>
+              <th>Claude</th>
+              <th>Cursor</th>
+              <th>VS Code</th>
+              <th>Codex</th>
+              <th>Slack</th>
+              <th>n8n</th>
+              <th>Notion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Close</th>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+            </tr>
+            <tr>
+              <th>Composio</th>
+              <td><i class="pill pill--partial"></i></td><td><i class="pill pill--partial"></i></td>
+              <td><i class="pill pill--partial"></i></td><td><i class="pill pill--partial"></i></td>
+              <td><i class="pill pill--partial"></i></td><td><i class="pill pill--partial"></i></td>
+              <td><i class="pill pill--partial"></i></td><td><i class="pill pill--fail"></i></td>
+            </tr>
+            <tr>
+              <th>Firecrawl</th>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+            </tr>
+            <tr>
+              <th>Neon</th>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+              <td><i class="pill pill--ok"></i></td><td><i class="pill pill--ok"></i></td>
+            </tr>
+            <tr>
+              <th>Rootly AI</th>
+              <td><i class="pill pill--fail"></i></td><td><i class="pill pill--fail"></i></td>
+              <td><i class="pill pill--fail"></i></td><td><i class="pill pill--fail"></i></td>
+              <td><i class="pill pill--fail"></i></td><td><i class="pill pill--fail"></i></td>
+              <td><i class="pill pill--fail"></i></td><td><i class="pill pill--fail"></i></td>
+            </tr>
+            <tr>
+              <th>Tavily</th>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+              <td><i class="pill pill--warn"></i></td><td><i class="pill pill--warn"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Proposal change: default to ~8 core hosts (not 18). Hover still shows “Server · Host · Reached — date”. Full grid behind a “Show all hosts” control.</p>
+    </div>
+  </section>
+
+  <p class="section-label">2 · Tool execution + multi-step</p>
+  <section class="frame" aria-label="Tool lists proposal">
+    <div class="wash" aria-hidden="true">
+      <div class="wash__base"></div>
+      <img class="wash__img" src="../agentstatus.dev-website/src/assets/mcp-index/hero-wash.jpg" alt="" />
+      <div class="wash__veil"></div>
+    </div>
+    <div class="frame__in">
+      <div class="mock-top">
+        <div>
+          <h2>What the tools actually did</h2>
+          <p>Most-tested tools in our measurements — not a popularity ranking.</p>
+        </div>
+        <div class="mock-meta">
+          <img src="agentstatus-wordmark.svg" alt=""
+               onerror="this.src='../agentstatus.dev-website/src/assets/agentstatus-wordmark.svg'" />
+          <span>Sep 2026</span>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <div class="col-head">
+            <i class="mark" aria-hidden="true"></i>
+            <h3>Tool execution</h3>
+          </div>
+          <p class="col-desc">Each row is one tool at one company: how often the call landed, versus how often the result did the job.</p>
+
+          <article class="tool">
+            <div class="tool__top">
+              <span class="tool__name">get_prompt</span>
+              <span class="tool__by">by Promptsharp</span>
+            </div>
+            <div class="metrics">
+              <div class="metric">
+                <label>Call landed <b>96%</b></label>
+                <div class="bar"><i style="width:96%"></i></div>
+              </div>
+              <div class="metric">
+                <label>Did the job <b>100%</b></label>
+                <div class="bar"><i class="is-strong" style="width:100%"></i></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tool">
+            <div class="tool__top">
+              <span class="tool__name">get_board_stats</span>
+              <span class="tool__by">by Red-Flag Greenflag · both 100%</span>
+            </div>
+            <!-- When both metrics are full, skip duplicate bars -->
+            <p style="font-size:12px;font-weight:700;color:hsl(var(--brand-navy))">Call landed and did the job — 100%</p>
+          </article>
+
+          <article class="tool">
+            <div class="tool__top">
+              <span class="tool__name">get_france_care_offers</span>
+              <span class="tool__by">by Alice · both 100%</span>
+            </div>
+            <p style="font-size:12px;font-weight:700;color:hsl(var(--brand-navy))">Call landed and did the job — 100%</p>
+          </article>
+        </div>
+
+        <div>
+          <div class="col-head">
+            <i class="mark mark--orange" aria-hidden="true"></i>
+            <h3>Multi-step</h3>
+          </div>
+          <p class="col-desc">Tools that appeared in a measured multi-step job. Finished means the whole job that tool was in.</p>
+
+          <article class="tool">
+            <div class="tool__top">
+              <span class="tool__name">search_papers</span>
+              <span class="tool__by">by Tomesphere · 1 sequence</span>
+            </div>
+            <p style="font-size:12px;font-weight:700;color:hsl(var(--brand-navy))">Sequence finished — 100%</p>
+          </article>
+
+          <article class="tool">
+            <div class="tool__top">
+              <span class="tool__name">get_france_care_offers</span>
+              <span class="tool__by">by Alice · 1 sequence</span>
+            </div>
+            <p style="font-size:12px;font-weight:700;color:hsl(var(--brand-navy))">Sequence finished — 100%</p>
+          </article>
+
+          <article class="tool">
+            <div class="tool__top">
+              <span class="tool__name">get_prompt</span>
+              <span class="tool__by">by Promptsharp · 1 sequence</span>
+            </div>
+            <p style="font-size:12px;font-weight:700;color:hsl(var(--brand-navy))">Sequence finished — 100%</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="diff">
+    <h3>vs current (from your recording)</h3>
+    <ul>
+      <li><strong>Out:</strong> rainbow greens; 18-host first paint; unlabeled colors; stacked “MCP INDEX” eyebrow over H1; walls of 100% bars; Claude pastel cards.</li>
+      <li><strong>In:</strong> teal / gold / orange / rust status map + legend; cream wash; real wordmark; meta next to logo; bars only when values differ.</li>
+      <li><strong>Copy:</strong> keep clear explainers; drop columns that say the same word for every row.</li>
+    </ul>
+  </aside>
+</body>
+</html>

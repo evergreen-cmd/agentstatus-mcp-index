@@ -1,0 +1,54 @@
+You are building UI for AgentStatus by Carmel Labs. Follow these rules on every single response, no exceptions.
+
+FONTS
+- Primary font: Plus Jakarta Sans (always import from Google Fonts)
+- Secondary font: DM Sans (for specific UI components only)
+- Never use any other font
+
+COLORS
+- Never hardcode hex values
+- Never use Tailwind color classes like bg-blue-500 or text-gray-700
+- Always use hsl(var(--token-name)) for every color value
+- The only colors that exist are the ones defined in the design system below
+
+DESIGN TOKENS (light mode)
+--background: 0 0% 100%
+--foreground: 222.2 84% 4.9%
+--card: 0 0% 100%
+--card-foreground: 222.2 84% 4.9%
+--primary: 221.2 83.2% 53.3%
+--primary-foreground: 210 40% 98%
+--secondary: 210 40% 96%
+--secondary-foreground: 222.2 84% 4.9%
+--muted: 210 40% 96%
+--muted-foreground: 215.4 16.3% 46.9%
+--accent: 210 40% 96%
+--accent-foreground: 222.2 84% 4.9%
+--destructive: 0 84.2% 60.2%
+--destructive-foreground: 210 40% 98%
+--border: 214.3 31.8% 91.4%
+--input: 214.3 31.8% 91.4%
+--ring: 221.2 83.2% 53.3%
+--radius: 0.5rem
+--brand-navy: 214 39% 17%
+
+BRAND ACCENT COLORS (use sparingly, for highlights and logo elements only)
+- Logo orange: #f97316
+- Hero yellow highlight: #facc15
+
+BUTTONS
+- Primary CTA: background hsl(var(--primary)), text hsl(var(--primary-foreground))
+- Never invent other color combinations for buttons
+
+BORDER RADIUS
+- Always use var(--radius) which equals 0.5rem
+- Exception: Fabric product theme uses 1.5rem
+
+GENERAL RULES
+- If you are unsure about a color, font, or spacing value, ask before inventing one
+- Never use Tailwind default colors
+- Always match the clean, professional aesthetic of agentstatus.dev
+BACKGROUNDS
+- Never use background images, textures, watercolor effects, or decorative patterns
+- Backgrounds are always flat colors using hsl(var(--token)) only
+- The only gradients allowed are ones explicitly asked for by the user

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgentStatus chart colors · 10 distinct</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --radius: 0.5rem;
+
+      --c1: 40 24% 97.5%;
+      --c2: 214 20% 72%;
+      --c3: 221.2 83.2% 53.3%;
+      --c4: 188 38% 38%;
+      --c5: 214 16% 42%;
+      --c6: 214 39% 17%;
+      --c7: 30 12% 55%;
+      --c8: 18 48% 38%;
+      --c9: 24.6 95% 53.1%;
+      --c10: 45 70% 58%;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: hsl(var(--brand-navy-deep));
+      color: hsl(var(--ink-cream));
+      min-height: 100vh;
+      padding: 2rem 1.5rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap { max-width: 960px; margin: 0 auto; }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .sub {
+      margin-top: 0.4rem;
+      font-size: 13px;
+      color: hsl(var(--ink-cream) / 0.7);
+      max-width: 40rem;
+      line-height: 1.45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+      gap: 0.85rem;
+      margin-top: 1.5rem;
+    }
+
+    .swatch {
+      border-radius: calc(var(--radius) * 1.5);
+      overflow: hidden;
+      border: 1px solid hsl(var(--ink-cream) / 0.12);
+      background: hsl(var(--brand-navy));
+    }
+
+    .chip { height: 92px; }
+
+    .meta { padding: 0.65rem 0.7rem 0.75rem; }
+
+    .meta strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .meta span {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 11px;
+      font-weight: 500;
+      color: hsl(var(--ink-cream) / 0.62);
+      line-height: 1.35;
+    }
+
+    .bars {
+      margin-top: 2rem;
+      padding: 1.25rem 1.3rem 1.35rem;
+      border-radius: calc(var(--radius) * 2);
+      border: 1px solid hsl(var(--ink-cream) / 0.12);
+      background: hsl(var(--brand-navy) / 0.55);
+    }
+
+    .bars h2 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 0.95rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+      height: 150px;
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 4px 4px 2px 2px;
+      min-height: 12px;
+    }
+
+    .labels {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.55rem;
+    }
+
+    .labels span {
+      flex: 1;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: hsl(var(--ink-cream) / 0.65);
+    }
+
+    .note {
+      margin-top: 1.25rem;
+      font-size: 12px;
+      color: hsl(var(--ink-cream) / 0.55);
+      line-height: 1.45;
+      max-width: 42rem;
+    }
+
+    /* light surface so dark navy reads */
+    .on-cream {
+      margin-top: 1.25rem;
+      padding: 1.25rem 1.3rem 1.35rem;
+      border-radius: calc(var(--radius) * 2);
+      background: hsl(var(--ink-cream));
+      color: hsl(var(--brand-navy));
+    }
+
+    .on-cream h2 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 0.95rem;
+    }
+
+    .on-cream .labels span { color: hsl(var(--brand-navy) / 0.55); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Chart colors · 10 distinct</h1>
+    <p class="sub">Wider hue spread for clear separation on navy wash. Still AgentStatus-adjacent — no AA neon green / purple / pink.</p>
+
+    <div class="grid">
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c1))"></div>
+        <div class="meta"><strong>1 · Cream</strong><span>hsl(40 24% 97.5%) · light warm</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c2))"></div>
+        <div class="meta"><strong>2 · Mist blue</strong><span>hsl(214 20% 72%) · light cool</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c3))"></div>
+        <div class="meta"><strong>3 · Primary blue</strong><span>hsl(221.2 83.2% 53.3%) · --primary</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c4))"></div>
+        <div class="meta"><strong>4 · Teal</strong><span>hsl(188 38% 38%) · cool green-blue</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c5))"></div>
+        <div class="meta"><strong>5 · Slate</strong><span>hsl(214 16% 42%) · mid gray-blue</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c6))"></div>
+        <div class="meta"><strong>6 · Brand navy</strong><span>hsl(214 39% 17%) · --brand-navy</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c7))"></div>
+        <div class="meta"><strong>7 · Warm stone</strong><span>hsl(30 12% 55%) · mid warm gray</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c8))"></div>
+        <div class="meta"><strong>8 · Rust</strong><span>hsl(18 48% 38%) · deep warm</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c9))"></div>
+        <div class="meta"><strong>9 · Logo orange</strong><span>hsl(24.6 95% 53.1%) · accent</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: hsl(var(--c10))"></div>
+        <div class="meta"><strong>10 · Soft gold</strong><span>hsl(45 70% 58%) · quiet warm</span></div>
+      </div>
+    </div>
+
+    <div class="bars">
+      <h2>As bars on navy</h2>
+      <div class="row">
+        <div class="bar" style="height: 94%; background: hsl(var(--c1))"></div>
+        <div class="bar" style="height: 82%; background: hsl(var(--c2))"></div>
+        <div class="bar" style="height: 76%; background: hsl(var(--c3))"></div>
+        <div class="bar" style="height: 68%; background: hsl(var(--c4))"></div>
+        <div class="bar" style="height: 58%; background: hsl(var(--c5))"></div>
+        <div class="bar" style="height: 44%; background: hsl(var(--c6)); outline: 1px solid hsl(var(--ink-cream) / 0.25)"></div>
+        <div class="bar" style="height: 62%; background: hsl(var(--c7))"></div>
+        <div class="bar" style="height: 70%; background: hsl(var(--c8))"></div>
+        <div class="bar" style="height: 88%; background: hsl(var(--c9))"></div>
+        <div class="bar" style="height: 80%; background: hsl(var(--c10))"></div>
+      </div>
+      <div class="labels">
+        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+        <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+      </div>
+    </div>
+
+    <div class="on-cream">
+      <h2>Same 10 on cream (for light charts later)</h2>
+      <div class="row">
+        <div class="bar" style="height: 94%; background: hsl(var(--c1)); outline: 1px solid hsl(var(--c6) / 0.15)"></div>
+        <div class="bar" style="height: 82%; background: hsl(var(--c2))"></div>
+        <div class="bar" style="height: 76%; background: hsl(var(--c3))"></div>
+        <div class="bar" style="height: 68%; background: hsl(var(--c4))"></div>
+        <div class="bar" style="height: 58%; background: hsl(var(--c5))"></div>
+        <div class="bar" style="height: 44%; background: hsl(var(--c6))"></div>
+        <div class="bar" style="height: 62%; background: hsl(var(--c7))"></div>
+        <div class="bar" style="height: 70%; background: hsl(var(--c8))"></div>
+        <div class="bar" style="height: 88%; background: hsl(var(--c9))"></div>
+        <div class="bar" style="height: 80%; background: hsl(var(--c10))"></div>
+      </div>
+      <div class="labels">
+        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+        <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+      </div>
+    </div>
+
+    <p class="note">6 (brand navy) needs a hairline on navy wash. 1 (cream) needs a hairline on cream. Everything else should read at a glance.</p>
+  </div>
+</body>
+</html>

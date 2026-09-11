@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wash options A · B · C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --muted: 210 40% 96%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --border: 214.3 31.8% 91.4%;
+      --primary: 221.2 83.2% 53.3%;
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --radius: 0.5rem;
+      --logo-orange: 24.6 95% 53.1%;
+      --host-cursor: 214 39% 17%;
+      --host-claude: 24.6 95% 53.1%;
+      --host-chatgpt: 152 42% 36%;
+      --host-vscode: 221.2 83.2% 53.3%;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: hsl(210 20% 96%);
+      color: hsl(var(--foreground));
+      padding: 1.5rem 1.25rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .chooser {
+      max-width: 1220px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .chooser h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: hsl(var(--brand-navy));
+    }
+
+    .chooser p {
+      margin-top: 0.35rem;
+      font-size: 13px;
+      color: hsl(var(--muted-foreground));
+      max-width: 40rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .tabs button {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0.55rem 0.9rem;
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      background: hsl(var(--card));
+      color: hsl(var(--brand-navy));
+      cursor: pointer;
+    }
+
+    .tabs button.is-on {
+      background: hsl(var(--brand-navy));
+      border-color: hsl(var(--brand-navy));
+      color: hsl(var(--ink-cream));
+    }
+
+    .panel { display: none; max-width: 1220px; margin: 0 auto; }
+    .panel.is-on { display: block; }
+
+    .label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: hsl(var(--muted-foreground));
+      margin-bottom: 0.65rem;
+    }
+
+    /* ── shared frame ── */
+    .frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: calc(var(--radius) * 3);
+      padding: 1.5rem 1.55rem 1.35rem;
+    }
+
+    .wash { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .wash__base { position: absolute; inset: 0; }
+    .wash__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.08) rotate(-2deg);
+      opacity: 0.92;
+    }
+    .wash__veil { position: absolute; inset: 0; }
+    .frame__in { position: relative; z-index: 1; }
+
+    /* Option A — navy full canvas */
+    .opt-a.frame {
+      border: 1px solid hsl(var(--brand-navy-deep));
+      background: hsl(var(--brand-navy-deep));
+      color: hsl(var(--ink-cream));
+    }
+    .opt-a .wash__base { background: hsl(var(--brand-navy)); }
+    .opt-a .wash__img { mix-blend-mode: soft-light; }
+    .opt-a .wash__img--2 {
+      transform: scale(1.12) rotate(1.5deg);
+      opacity: 0.45;
+      mix-blend-mode: overlay;
+    }
+    .opt-a .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--brand-navy) / 0.12) 0%, transparent 30%, transparent 55%, hsl(var(--brand-navy-deep) / 0.88) 100%),
+        linear-gradient(90deg, hsl(var(--brand-navy-deep) / 0.45) 0%, transparent 40%, transparent 70%, hsl(var(--brand-navy-deep) / 0.3) 100%);
+    }
+    .opt-a .eyebrow,
+    .opt-a .sub,
+    .opt-a .meta,
+    .opt-a .hint,
+    .opt-a .x__host,
+    .opt-a .x__proto,
+    .opt-a .y-label,
+    .opt-a .footer { color: hsl(var(--ink-cream) / 0.72); }
+    .opt-a h1,
+    .opt-a h2,
+    .opt-a .brand__word,
+    .opt-a .tabs-row a.is-active,
+    .opt-a .val,
+    .opt-a .x__name,
+    .opt-a .legend,
+    .opt-a .footer a { color: hsl(var(--ink-cream)); }
+    .opt-a .brand__word span { color: hsl(var(--ink-cream) / 0.55); }
+    .opt-a .tabs-row a { color: hsl(var(--ink-cream) / 0.5); }
+    .opt-a .nav,
+    .opt-a .footer,
+    .opt-a .plot { border-color: hsl(var(--ink-cream) / 0.18); }
+    .opt-a .grid-line { border-top-color: hsl(var(--ink-cream) / 0.14); }
+    .opt-a .tabs-row a.is-active { border-bottom-color: hsl(var(--logo-orange)); }
+    .opt-a .callout {
+      background: hsl(var(--brand-navy-deep) / 0.72);
+      color: hsl(var(--ink-cream) / 0.78);
+      border-left-color: hsl(var(--logo-orange));
+    }
+    .opt-a .callout strong { color: hsl(var(--ink-cream)); }
+    .opt-a .step { background: hsl(var(--ink-cream) / 0.22); }
+    .opt-a .step.is-on { background: hsl(var(--ink-cream) / 0.65); }
+    .opt-a .bar--cursor { background: hsl(var(--ink-cream)); }
+    .opt-a .swatch--cursor { background: hsl(var(--ink-cream)); }
+
+    /* Option B — cream full canvas */
+    .opt-b.frame {
+      border: 1px solid hsl(var(--border));
+      background: hsl(var(--ink-cream));
+      color: hsl(var(--foreground));
+    }
+    .opt-b .wash__base { background: hsl(var(--ink-cream)); }
+    .opt-b .wash__img { mix-blend-mode: multiply; }
+    .opt-b .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--ink-cream) / 0.15) 0%, transparent 28%, transparent 70%, hsl(var(--ink-cream) / 0.55) 100%),
+        linear-gradient(90deg, hsl(var(--ink-cream) / 0.25) 0%, transparent 40%, transparent 70%, hsl(var(--ink-cream) / 0.2) 100%);
+    }
+    .opt-b .eyebrow,
+    .opt-b .sub,
+    .opt-b .meta,
+    .opt-b .hint,
+    .opt-b .x__host,
+    .opt-b .x__proto,
+    .opt-b .y-label,
+    .opt-b .footer { color: hsl(var(--muted-foreground)); }
+    .opt-b h1,
+    .opt-b h2,
+    .opt-b .brand__word,
+    .opt-b .tabs-row a.is-active,
+    .opt-b .val,
+    .opt-b .x__name,
+    .opt-b .legend,
+    .opt-b .footer a { color: hsl(var(--brand-navy)); }
+    .opt-b .brand__word span { color: hsl(var(--muted-foreground)); }
+    .opt-b .tabs-row a { color: hsl(var(--muted-foreground)); }
+    .opt-b .nav,
+    .opt-b .footer,
+    .opt-b .plot { border-color: hsl(var(--border) / 0.9); }
+    .opt-b .grid-line { border-top-color: hsl(var(--border)); }
+    .opt-b .tabs-row a.is-active { border-bottom-color: hsl(var(--primary)); }
+    .opt-b .callout {
+      background: hsl(var(--card) / 0.78);
+      color: hsl(var(--muted-foreground));
+      border-left-color: hsl(var(--logo-orange));
+      backdrop-filter: blur(4px);
+    }
+    .opt-b .callout strong { color: hsl(var(--brand-navy)); }
+    .opt-b .plot-glass {
+      position: absolute;
+      inset: 0;
+      background: hsl(var(--card) / 0.35);
+      border-radius: var(--radius);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Option C — Execution Time on navy wash */
+    .opt-c.frame {
+      border: 1px solid hsl(var(--brand-navy-deep));
+      background: hsl(var(--brand-navy-deep));
+      color: hsl(var(--ink-cream));
+    }
+    .opt-c .wash__base { background: hsl(var(--brand-navy)); }
+    .opt-c .wash__img { mix-blend-mode: soft-light; }
+    .opt-c .wash__img--2 {
+      transform: scale(1.12) rotate(1.5deg);
+      opacity: 0.45;
+      mix-blend-mode: overlay;
+    }
+    .opt-c .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--brand-navy) / 0.12) 0%, transparent 30%, transparent 55%, hsl(var(--brand-navy-deep) / 0.9) 100%),
+        linear-gradient(90deg, hsl(var(--brand-navy-deep) / 0.45) 0%, transparent 40%, transparent 70%, hsl(var(--brand-navy-deep) / 0.3) 100%);
+    }
+
+    /* ── shared chart chrome ── */
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1.1rem;
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.55rem;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+    }
+    .sub {
+      margin-top: 0.45rem;
+      font-size: 13px;
+      line-height: 1.45;
+      max-width: 36rem;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+      padding-top: 0.15rem;
+    }
+    .brand__mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      background: hsl(var(--logo-orange));
+    }
+    .brand__word {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .brand__word span { font-weight: 600; }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem 1.5rem;
+      padding-bottom: 0.95rem;
+      margin-bottom: 1.1rem;
+      border-bottom: 1px solid;
+    }
+    .tabs-row {
+      display: flex;
+      gap: 1.35rem;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .tabs-row a {
+      text-decoration: none;
+      padding-bottom: 0.55rem;
+      border-bottom: 2px solid transparent;
+    }
+    .meta { font-size: 12px; font-weight: 500; }
+
+    .chart-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem 1.25rem;
+      margin-bottom: 0.85rem;
+    }
+    .chart-head h2 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.55rem;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .swatch { width: 10px; height: 10px; border-radius: 2px; }
+    .swatch--cursor { background: hsl(var(--host-cursor)); }
+    .swatch--claude { background: hsl(var(--host-claude)); }
+    .swatch--chatgpt { background: hsl(var(--host-chatgpt)); }
+    .swatch--vscode { background: hsl(var(--host-vscode)); }
+    .hint {
+      font-size: 11px;
+      line-height: 1.4;
+      max-width: 17rem;
+      text-align: right;
+    }
+    .hint strong { color: hsl(var(--logo-orange)); font-weight: 600; }
+
+    .plot {
+      position: relative;
+      height: 320px;
+      margin: 0.25rem 0 0.35rem;
+      border-bottom: 1px solid;
+    }
+    .grid { position: absolute; inset: 0 0 0 2.4rem; pointer-events: none; z-index: 2; }
+    .grid-line { position: absolute; left: 0; right: 0; border-top: 1px solid; }
+    .grid-line--threshold {
+      border-top: 1.5px dashed hsl(var(--logo-orange));
+      z-index: 2;
+    }
+    .y-label {
+      position: absolute;
+      left: 0;
+      width: 2.1rem;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      text-align: right;
+    }
+    .y-label--threshold { color: hsl(var(--logo-orange)) !important; }
+
+    .bars {
+      position: absolute;
+      left: 2.4rem;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 0.35rem;
+      padding: 0 0.15rem;
+      z-index: 3;
+    }
+    .col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+    }
+    .val {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.28rem;
+      white-space: nowrap;
+    }
+    .bar {
+      width: 68%;
+      max-width: 42px;
+      border-radius: 3px 3px 1px 1px;
+      min-height: 2px;
+    }
+    .bar--cursor { background: hsl(var(--host-cursor)); }
+    .bar--claude { background: hsl(var(--host-claude)); }
+    .bar--chatgpt { background: hsl(var(--host-chatgpt)); }
+    .bar--vscode { background: hsl(var(--host-vscode)); }
+
+    .x-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.35rem;
+      padding: 0.55rem 0 0 2.4rem;
+    }
+    .x { flex: 1; min-width: 0; text-align: center; font-size: 10px; line-height: 1.25; }
+    .x__name {
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: -0.01em;
+    }
+    .x__name.is-alert { color: hsl(var(--logo-orange)) !important; }
+    .x__host, .x__proto { font-weight: 500; }
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      margin-top: 0.28rem;
+      height: 6px;
+      align-items: center;
+    }
+    .step {
+      width: 7px;
+      height: 2px;
+      border-radius: 1px;
+      background: hsl(var(--border));
+    }
+    .step.is-on { background: hsl(var(--muted-foreground) / 0.55); }
+
+    .callout {
+      position: absolute;
+      left: 2.4rem;
+      top: 42%;
+      width: min(240px, 28%);
+      z-index: 4;
+      padding: 0.55rem 0.65rem 0.55rem 0.7rem;
+      border-left: 3px solid;
+      font-size: 11px;
+      line-height: 1.4;
+      pointer-events: none;
+    }
+    .callout strong { display: block; font-weight: 700; margin-bottom: 0.15rem; }
+
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem 1.5rem;
+      margin-top: 1.15rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .footer a { font-weight: 700; text-decoration: none; }
+
+    /* C-specific bars / legend */
+    .opt-c .eyebrow,
+    .opt-c .sub,
+    .opt-c .meta,
+    .opt-c .hint,
+    .opt-c .x__host,
+    .opt-c .y-label,
+    .opt-c .footer { color: hsl(var(--ink-cream) / 0.72); }
+    .opt-c h1,
+    .opt-c h2,
+    .opt-c .brand__word,
+    .opt-c .tabs-row a.is-active,
+    .opt-c .val,
+    .opt-c .x__name,
+    .opt-c .legend,
+    .opt-c .footer a { color: hsl(var(--ink-cream)); }
+    .opt-c .brand__word span { color: hsl(var(--ink-cream) / 0.55); }
+    .opt-c .tabs-row a { color: hsl(var(--ink-cream) / 0.5); }
+    .opt-c .nav,
+    .opt-c .footer,
+    .opt-c .plot { border-color: hsl(var(--ink-cream) / 0.18); }
+    .opt-c .grid-line { border-top-color: hsl(var(--ink-cream) / 0.14); }
+    .opt-c .tabs-row a.is-active { border-bottom-color: hsl(var(--logo-orange)); }
+    .opt-c .x { font-size: 9px; }
+    .opt-c .x__name { font-size: 10px; line-height: 1.2; }
+    .opt-c .bars { gap: 0.25rem; }
+    .opt-c .bar { width: 72%; max-width: 36px; border-radius: 4px 4px 1px 1px; }
+    .bar--model-green { background: hsl(152 42% 36%); }
+    .bar--model-blue { background: hsl(221.2 83.2% 53.3%); }
+    .bar--model-navy { background: hsl(var(--ink-cream)); }
+    .bar--model-brown { background: hsl(24.6 55% 42%); }
+    .bar--model-orange { background: hsl(var(--logo-orange)); }
+    .bar--model-purple { background: hsl(262 40% 55%); }
+    .swatch--green { background: hsl(152 42% 36%); }
+    .swatch--blue { background: hsl(221.2 83.2% 53.3%); }
+    .swatch--navy { background: hsl(var(--ink-cream)); }
+    .swatch--brown { background: hsl(24.6 55% 42%); }
+    .swatch--orange { background: hsl(var(--logo-orange)); }
+    .swatch--purple { background: hsl(262 40% 55%); }
+  </style>
+</head>
+<body>
+  <div class="chooser">
+    <h1>Wash options</h1>
+    <p>Same Cycle 12 chart for A and B. C is the Execution Time layout on navy wash. Pick one and I’ll lock it in.</p>
+    <div class="tabs" role="tablist">
+      <button type="button" class="is-on" data-opt="a" role="tab" aria-selected="true">A · Navy full canvas</button>
+      <button type="button" data-opt="b" role="tab" aria-selected="false">B · Cream full canvas</button>
+      <button type="button" data-opt="c" role="tab" aria-selected="false">C · Execution Time + wash</button>
+    </div>
+  </div>
+
+  <!-- A -->
+  <section class="panel is-on" id="panel-a" data-panel="a">
+    <p class="label">A — Navy painterly wash as the full export canvas. Chart sits on the wash. No cream sheet.</p>
+    <div class="frame opt-a">
+      <div class="wash" aria-hidden="true">
+        <div class="wash__base"></div>
+        <img class="wash__img" src="../agentstatus.dev-website/src/assets/aoi-index/hero-wash.jpg" alt="" />
+        <img class="wash__img wash__img--2" src="../agentstatus.dev-website/src/assets/aoi-index/hero-wash.jpg" alt="" />
+        <div class="wash__veil"></div>
+      </div>
+      <div class="frame__in" data-chart="cycle12"></div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="panel" id="panel-b" data-panel="b">
+    <p class="label">B — Cream MCP Index wash behind the whole chart. No opaque sheet covering the texture.</p>
+    <div class="frame opt-b">
+      <div class="wash" aria-hidden="true">
+        <div class="wash__base"></div>
+        <img class="wash__img" src="../agentstatus.dev-website/src/assets/mcp-index/hero-wash.jpg" alt="" />
+        <div class="wash__veil"></div>
+      </div>
+      <div class="frame__in" data-chart="cycle12" data-glass="1"></div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="panel" id="panel-c" data-panel="c">
+    <p class="label">C — Execution Time chart (AA-style layout) with AgentStatus navy wash + host/model colors from our tokens.</p>
+    <div class="frame opt-c">
+      <div class="wash" aria-hidden="true">
+        <div class="wash__base"></div>
+        <img class="wash__img" src="../agentstatus.dev-website/src/assets/aoi-index/hero-wash.jpg" alt="" />
+        <img class="wash__img wash__img--2" src="../agentstatus.dev-website/src/assets/aoi-index/hero-wash.jpg" alt="" />
+        <div class="wash__veil"></div>
+      </div>
+      <div class="frame__in" data-chart="exec"></div>
+    </div>
+  </section>
+
+  <script>
+    const cycleRows = [
+      { name: "Linear", host: "Cursor", proto: "HTTP", hostKey: "cursor", sec: 1.4, steps: 3 },
+      { name: "Notion", host: "Claude", proto: "HTTP", hostKey: "claude", sec: 2.1, steps: 3 },
+      { name: "Stripe", host: "VS Code", proto: "HTTP", hostKey: "vscode", sec: 2.8, steps: 4 },
+      { name: "GitHub", host: "Claude", proto: "HTTP", hostKey: "claude", sec: 3.1, steps: 3 },
+      { name: "Slack", host: "Claude", proto: "SSE", hostKey: "claude", sec: 3.4, steps: 4 },
+      { name: "HubSpot", host: "VS Code", proto: "HTTP", hostKey: "vscode", sec: 4.2, steps: 4 },
+      { name: "Asana", host: "Claude", proto: "HTTP", hostKey: "claude", sec: 5.1, steps: 3 },
+      { name: "Intercom", host: "Cursor", proto: "HTTP", hostKey: "cursor", sec: 6.8, steps: 5 },
+      { name: "Zendesk", host: "ChatGPT", proto: "HTTP", hostKey: "chatgpt", sec: 8.9, steps: 4 },
+      { name: "Airtable", host: "VS Code", proto: "SSE", hostKey: "vscode", sec: 11.2, steps: 5 },
+      { name: "Firecrawl", host: "Claude", proto: "HTTP", hostKey: "claude", sec: 12.4, steps: 5, alert: true },
+      { name: "Salesforce", host: "ChatGPT", proto: "SSE", hostKey: "chatgpt", sec: 24.1, steps: 6 },
+    ];
+
+    /* Minutes → display; max axis ~70 min (1.1h ≈ 66m) */
+    const execRows = [
+      { agent: "Antigravity SDK", model: "Gemini 3.8 Flash", min: 11.7, color: "green" },
+      { agent: "Codex", model: "DeepSeek V4 Flash", min: 18.3, color: "blue" },
+      { agent: "Muse Code", model: "Muse Spark 1.3 (xhigh)", min: 18.3, color: "blue" },
+      { agent: "Muse Code", model: "Muse Spark 1.3 (max)", min: 18.4, color: "blue" },
+      { agent: "Grok Build", model: "Grok 4.6", min: 19.5, color: "purple" },
+      { agent: "Codex", model: "GPT-5.6 Sol", min: 20.6, color: "navy" },
+      { agent: "Codex", model: "GPT-6 Astra", min: 29.4, color: "navy" },
+      { agent: "Claude Code", model: "Fable 5.1", min: 34.8, color: "brown" },
+      { agent: "Codex", model: "DeepSeek V4 Pro", min: 40.3, color: "blue" },
+      { agent: "Claude Code", model: "Opus 5", min: 41.9, color: "brown" },
+      { agent: "Opencode", model: "GLM-5.3", min: 48.1, color: "blue" },
+      { agent: "Kimi Code CLI", model: "Kimi K3", min: 60, color: "blue", label: "1.0h" },
+      { agent: "Claude Code", model: "Qwen 3.8 Max", min: 66, color: "orange", label: "1.1h" },
+    ];
+
+    function fmtMin(r) {
+      if (r.label) return r.label;
+      return r.min.toFixed(1) + "m";
+    }
+
+    function cycleMarkup(withGlass) {
+      const MAX = 24;
+      const bars = cycleRows
+        .map((r) => {
+          const h = Math.max(0.8, (r.sec / MAX) * 100);
+          return (
+            '<div class="col"><div class="val">' +
+            r.sec.toFixed(1) +
+            's</div><div class="bar bar--' +
+            r.hostKey +
+            '" style="height:' +
+            h +
+            '%"></div></div>'
+          );
+        })
+        .join("");
+
+      const xlabels = cycleRows
+        .map((r) => {
+          const steps = Array.from({ length: 6 }, (_, i) =>
+            '<i class="step' + (i < r.steps ? " is-on" : "") + '"></i>'
+          ).join("");
+          return (
+            '<div class="x"><div class="x__name' +
+            (r.alert ? " is-alert" : "") +
+            '">' +
+            r.name +
+            '</div><div class="x__host">' +
+            r.host +
+            '</div><div class="x__proto">' +
+            r.proto +
+            '</div><div class="steps" aria-hidden="true">' +
+            steps +
+            "</div></div>"
+          );
+        })
+        .join("");
+
+      return (
+        '<header class="top"><div><p class="eyebrow">MCP Index · Cycle 12</p>
+            <div class="title-row">
+<div><h1>Time to first result</h1><p class="sub">Wall time from connect to the first tool result that carried data. Median of five runs.</p></div></div></div><div class="brand"><span class="brand__mark"></span><p class="brand__word">agent<span>status</span></p></div></header>' +
+        '<nav class="nav"><div class="tabs-row"><a class="is-active" href="#">Time to first result</a><a href="#">Steps cleared</a><a href="#">Reruns</a></div><p class="meta">12 servers / 4 hosts / residential node / Sep 9, 2026</p></nav>' +
+        '<div class="chart-head"><div><h2>Median seconds to first result</h2><div class="legend"><span><i class="swatch swatch--cursor"></i>Cursor</span><span><i class="swatch swatch--claude"></i>Claude</span><span><i class="swatch swatch--chatgpt"></i>ChatGPT</span><span><i class="swatch swatch--vscode"></i>VS Code</span></div></div><p class="hint">Lower is better. The dashed line is the <strong>ten-second</strong> mark, where people stop waiting.</p></div>' +
+        '<div class="plot">' +
+        (withGlass ? '<div class="plot-glass"></div>' : "") +
+        '<div class="grid"><div class="grid-line" style="top:0%"></div><div class="grid-line" style="top:16.67%"></div><div class="grid-line grid-line--threshold" style="top:58.33%"></div><div class="grid-line" style="top:79.17%"></div><div class="grid-line" style="top:100%"></div><span class="y-label" style="top:0%">24s</span><span class="y-label" style="top:16.67%">20s</span><span class="y-label y-label--threshold" style="top:58.33%">10s</span><span class="y-label" style="top:79.17%">5s</span><span class="y-label" style="top:100%">0</span></div>' +
+        '<aside class="callout"><strong>Firecrawl answers, then stalls.</strong>Handshake in 0.4s, first usable result 12s later, past the point a person waits.</aside>' +
+        '<div class="bars">' +
+        bars +
+        "</div></div>" +
+        '<div class="x-labels">' +
+        xlabels +
+        "</div>" +
+        '<footer class="footer"><p>Fast servers finish the path. The slow ones are slow because they retry a step that never clears.</p><p>Independent · residential node · <a href="https://agentstatus.dev">agentstatus.dev</a></p></footer>'
+      );
+    }
+
+    function execMarkup() {
+      const MAX = 70;
+      const bars = execRows
+        .map((r) => {
+          const h = Math.max(1.2, (r.min / MAX) * 100);
+          return (
+            '<div class="col"><div class="val">' +
+            fmtMin(r) +
+            '</div><div class="bar bar--model-' +
+            r.color +
+            '" style="height:' +
+            h +
+            '%"></div></div>'
+          );
+        })
+        .join("");
+
+      const xlabels = execRows
+        .map(
+          (r) =>
+            '<div class="x"><div class="x__name">' +
+            r.agent +
+            '</div><div class="x__host">' +
+            r.model +
+            "</div></div>"
+        )
+        .join("");
+
+      return (
+        '<header class="top"><div><p class="eyebrow">MCP Index · Cycle 12</p>
+            <div class="title-row">
+<div><h1>Execution Time</h1><p class="sub">Active agent runtime across the residential probe set. Lower is better.</p></div></div></div><div class="brand"><span class="brand__mark"></span><p class="brand__word">agent<span>status</span></p></div></header>' +
+        '<nav class="nav"><div class="tabs-row"><a class="is-active" href="#">Execution Time</a><a href="#">Turns</a></div><p class="meta">13 agents · color by model · Sep 9, 2026</p></nav>' +
+        '<div class="chart-head"><div><h2>Time per task</h2><div class="legend"><span><i class="swatch swatch--green"></i>Flash</span><span><i class="swatch swatch--blue"></i>Open</span><span><i class="swatch swatch--navy"></i>GPT</span><span><i class="swatch swatch--purple"></i>Grok</span><span><i class="swatch swatch--brown"></i>Claude</span><span><i class="swatch swatch--orange"></i>Qwen</span></div></div><p class="hint">Wall-clock agent runtime to task complete. Reconstructed from the reference layout for wash comparison.</p></div>' +
+        '<div class="plot"><div class="grid"><div class="grid-line" style="top:0%"></div><div class="grid-line" style="top:25%"></div><div class="grid-line" style="top:50%"></div><div class="grid-line" style="top:75%"></div><div class="grid-line" style="top:100%"></div><span class="y-label" style="top:0%">70m</span><span class="y-label" style="top:25%">52m</span><span class="y-label" style="top:50%">35m</span><span class="y-label" style="top:75%">17m</span><span class="y-label" style="top:100%">0</span></div><div class="bars">' +
+        bars +
+        '</div></div><div class="x-labels">' +
+        xlabels +
+        '</div><footer class="footer"><p>What execution time is measuring: active agent runtime until the task returns a result.</p><p><a href="https://agentstatus.dev">agentstatus.dev</a></p></footer>'
+      );
+    }
+
+    document.querySelectorAll("[data-chart]").forEach((el) => {
+      if (el.dataset.chart === "cycle12") {
+        el.innerHTML = cycleMarkup(el.dataset.glass === "1");
+      } else {
+        el.innerHTML = execMarkup();
+      }
+    });
+
+    const buttons = document.querySelectorAll(".tabs button");
+    const panels = document.querySelectorAll(".panel");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.opt;
+        buttons.forEach((b) => {
+          b.classList.toggle("is-on", b === btn);
+          b.setAttribute("aria-selected", b === btn ? "true" : "false");
+        });
+        panels.forEach((p) => p.classList.toggle("is-on", p.dataset.panel === id));
+      });
+    });
+  </script>
+</body>
+</html>
