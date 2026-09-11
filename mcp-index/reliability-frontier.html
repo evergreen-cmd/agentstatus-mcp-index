@@ -255,13 +255,15 @@
     }
     .x { flex: 1; min-width: 0; text-align: center; font-size: 11px; line-height: 1.25; }
     .mark {
-      width: 22px; height: 22px; margin: 0 auto 0.3rem; border-radius: 6px;
-      display: grid; place-items: center; font-size: 8px; font-weight: 800;
-      color: hsl(var(--ink-cream));
+      width: 28px; height: 28px; margin: 0 auto 0.35rem;
+      display: grid; place-items: center;
+      background: transparent;
     }
-    .mark--ok { background: hsl(var(--ok)); }
-    .mark--fail { background: hsl(var(--fail)); }
-    .mark--prov { background: transparent; color: hsl(var(--ok)); box-shadow: inset 0 0 0 2px hsl(var(--ok)); }
+    .mark img {
+      width: 28px; height: 28px;
+      object-fit: contain;
+      display: block;
+    }
     .x__name {
       font-weight: 700; transform: rotate(-48deg); transform-origin: 50% 0;
       white-space: nowrap; display: inline-block;
@@ -353,20 +355,20 @@
 
   <script>
     const SERVERS = [
-      { name: "AWS Knowledge", short: "AWS Knowledge", mark: "AK", score: 99.7, tool: 100, reach: 100, spec: 100, p95: 4.0, runs: 13, rank: null, status: "operational", prov: true, homepage: "aws.amazon.com" },
-      { name: "Semgrep", short: "Semgrep", mark: "SE", score: 98.9, tool: 100, reach: 100, spec: 100, p95: 5.8, runs: 2, rank: null, status: "operational", prov: true, homepage: "semgrep.dev" },
-      { name: "Hugging Face", short: "Hugging Face", mark: "HF", score: 95.0, tool: 100, reach: 95.2, spec: 96.7, p95: 7.8, runs: 42, rank: 184, status: "degraded", prov: false, homepage: "huggingface.co" },
-      { name: "Exa AI", short: "Exa AI", mark: "EA", score: 92.9, tool: 98.4, reach: 90.5, spec: 90.0, p95: 6.8, runs: 21, rank: 374, status: "operational", prov: false, homepage: "exa.ai" },
-      { name: "Microsoft Learn", short: "MS Learn", mark: "ML", score: 92.8, tool: 97.9, reach: 100, spec: 100, p95: 11, runs: 59, rank: 376, status: "operational", prov: false, homepage: "learn.microsoft.com" },
-      { name: "Svelte", short: "Svelte", mark: "SV", score: 91.3, tool: 100, reach: 98.0, spec: 98.0, p95: 12, runs: 51, rank: 489, status: "operational", prov: false, homepage: "svelte.dev" },
-      { name: "Wise", short: "Wise", mark: "WI", score: 91.0, tool: 94.0, reach: 100, spec: 94.5, p95: 11, runs: 50, rank: 513, status: "degraded", prov: false, homepage: "wise.com" },
-      { name: "Context7", short: "Context7", mark: "CO", score: 87.5, tool: 94.9, reach: 97.9, spec: 98.6, p95: 15, runs: 48, rank: 821, status: "operational", prov: false, homepage: "context7.com" },
-      { name: "Tavily", short: "Tavily", mark: "TA", score: 83.5, tool: 86.4, reach: 100, spec: 95.6, p95: 17, runs: 42, rank: 1219, status: "degraded", prov: false, homepage: "tavily.com" },
-      { name: "Prisma (GitMCP)", short: "Prisma", mark: "PG", score: 81.2, tool: 98.9, reach: 100, spec: 99.6, p95: 36, runs: 48, rank: 1436, status: "operational", prov: false, homepage: "prisma.io" },
-      { name: "Tailwind CSS (GitMCP)", short: "Tailwind CSS", mark: "TC", score: 80.6, tool: 100, reach: 98.1, spec: 98.1, p95: 37, runs: 53, rank: 1504, status: "operational", prov: false, homepage: "tailwindcss.com" },
-      { name: "Firecrawl", short: "Firecrawl", mark: "FI", score: 78.1, tool: 53.3, reach: 100, spec: 84.3, p95: 10, runs: 36, rank: 1725, status: "degraded", prov: false, homepage: "firecrawl.dev", alert: true },
-      { name: "Redis (GitMCP)", short: "Redis", mark: "RG", score: 77.9, tool: 97.1, reach: 95.1, spec: 93.8, p95: 38, runs: 61, rank: 1732, status: "operational", prov: false, homepage: "redis.io" },
-      { name: "Next.js (GitMCP)", short: "Next.js", mark: "NJ", score: 77.4, tool: 93.4, reach: 96.6, spec: 96.4, p95: 43, runs: 59, rank: 1775, status: "operational", prov: false, homepage: "nextjs.org" },
+      { name: "AWS Knowledge", short: "AWS Knowledge", logo: "logos/aws.png", score: 99.7, tool: 100, reach: 100, spec: 100, p95: 4.0, runs: 13, rank: null, status: "operational", prov: true, homepage: "aws.amazon.com" },
+      { name: "Semgrep", short: "Semgrep", logo: "logos/semgrep.png", score: 98.9, tool: 100, reach: 100, spec: 100, p95: 5.8, runs: 2, rank: null, status: "operational", prov: true, homepage: "semgrep.dev" },
+      { name: "Hugging Face", short: "Hugging Face", logo: "logos/huggingface.png", score: 95.0, tool: 100, reach: 95.2, spec: 96.7, p95: 7.8, runs: 42, rank: 184, status: "degraded", prov: false, homepage: "huggingface.co" },
+      { name: "Exa AI", short: "Exa AI", logo: "logos/exa.png", score: 92.9, tool: 98.4, reach: 90.5, spec: 90.0, p95: 6.8, runs: 21, rank: 374, status: "operational", prov: false, homepage: "exa.ai" },
+      { name: "Microsoft Learn", short: "MS Learn", logo: "logos/microsoft.png", score: 92.8, tool: 97.9, reach: 100, spec: 100, p95: 11, runs: 59, rank: 376, status: "operational", prov: false, homepage: "learn.microsoft.com" },
+      { name: "Svelte", short: "Svelte", logo: "logos/svelte.png", score: 91.3, tool: 100, reach: 98.0, spec: 98.0, p95: 12, runs: 51, rank: 489, status: "operational", prov: false, homepage: "svelte.dev" },
+      { name: "Wise", short: "Wise", logo: "logos/wise.png", score: 91.0, tool: 94.0, reach: 100, spec: 94.5, p95: 11, runs: 50, rank: 513, status: "degraded", prov: false, homepage: "wise.com" },
+      { name: "Context7", short: "Context7", logo: "logos/context7.png", score: 87.5, tool: 94.9, reach: 97.9, spec: 98.6, p95: 15, runs: 48, rank: 821, status: "operational", prov: false, homepage: "context7.com" },
+      { name: "Tavily", short: "Tavily", logo: "logos/tavily.png", score: 83.5, tool: 86.4, reach: 100, spec: 95.6, p95: 17, runs: 42, rank: 1219, status: "degraded", prov: false, homepage: "tavily.com" },
+      { name: "Prisma (GitMCP)", short: "Prisma", logo: "logos/prisma.png", score: 81.2, tool: 98.9, reach: 100, spec: 99.6, p95: 36, runs: 48, rank: 1436, status: "operational", prov: false, homepage: "prisma.io" },
+      { name: "Tailwind CSS (GitMCP)", short: "Tailwind CSS", logo: "logos/tailwindcss.png", score: 80.6, tool: 100, reach: 98.1, spec: 98.1, p95: 37, runs: 53, rank: 1504, status: "operational", prov: false, homepage: "tailwindcss.com" },
+      { name: "Firecrawl", short: "Firecrawl", logo: "logos/firecrawl.png", score: 78.1, tool: 53.3, reach: 100, spec: 84.3, p95: 10, runs: 36, rank: 1725, status: "degraded", prov: false, homepage: "firecrawl.dev", alert: true },
+      { name: "Redis (GitMCP)", short: "Redis", logo: "logos/redis.png", score: 77.9, tool: 97.1, reach: 95.1, spec: 93.8, p95: 38, runs: 61, rank: 1732, status: "operational", prov: false, homepage: "redis.io" },
+      { name: "Next.js (GitMCP)", short: "Next.js", logo: "logos/nextjs.png", score: 77.4, tool: 93.4, reach: 96.6, spec: 96.4, p95: 43, runs: 59, rank: 1775, status: "operational", prov: false, homepage: "nextjs.org" },
     ];
 
     const W = 980;
@@ -519,7 +521,7 @@
         const h = ((s.score - yMin) / (yMax - yMin)) * 100;
         const t = tone(s);
         cols += '<div class="col"><div class="val">' + s.score.toFixed(1) + '</div><div class="bar bar--' + t + '" style="height:' + h + '%" title="' + s.name + " · " + s.score.toFixed(1) + '"></div></div>';
-        labs += '<div class="x"><div class="mark mark--' + t + '">' + s.mark + '</div><div class="x__name">' + s.short + "</div></div>";
+        labs += '<div class="x"><div class="mark"><img src="' + s.logo + '" alt="' + s.short + '" /></div><div class="x__name">' + s.short + "</div></div>";
       });
       return '<div class="bars"><div class="grid">' + grid + '</div><div class="bar-row">' + cols + "</div></div><div class=\"x-labels\">" + labs + "</div>";
     }
