@@ -180,7 +180,7 @@
       letter-spacing: -0.045em; line-height: 1; margin: 0.55rem 0 0.5rem;
     }
     .poster__stat span { color: hsl(var(--logo-orange)); }
-    .poster__line { font-size: 17px; font-weight: 600; line-height: 1.35; max-width: 30rem; letter-spacing: -0.02em; }
+    .poster__line { font-size: 17px; font-weight: 600; line-height: 1.35; max-width: 38rem; letter-spacing: -0.02em; }
     .poster__hosts { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 1.15rem; }
 
     .evidence {
@@ -274,7 +274,7 @@
         <section class="panel" id="panel-poster">
           <div class="poster">
             <p class="poster__stat"><span>8</span> / 18</p>
-            <p class="poster__line">hosts cleared tools/call end to end on 10 Sep 2026, 13:45 UTC. Nine never connected, and Cursor broke on invoke (0 of 3 calls).</p>
+            <p class="poster__line">Nine hosts never connected, and Cursor stopped at invoke (0 of 3 calls).</p>
             <div class="poster__hosts" id="poster-hosts"></div>
           </div>
         </section>
@@ -283,11 +283,15 @@
           <h2>Evidence · one host sample (Cursor)</h2>
           <dl>
             <dt>Connect</dt>
-            <dd><code>Reached · session started</code></dd>
+            <dd><code>Reached</code></dd>
+            <dt>Starts up</dt>
+            <dd><code>Started</code></dd>
             <dt>Find tools</dt>
             <dd><code>7 tools listed</code></dd>
             <dt>Calls them</dt>
-            <dd><code>0 of 3 · Can't call</code></dd>
+            <dd><code>0 of 3</code></dd>
+            <dt>Answers work</dt>
+            <dd><code>Not reached</code></dd>
             <dt>Endpoint</dt>
             <dd><code>https://mcp.semgrep.ai/mcp</code></dd>
           </dl>
@@ -308,7 +312,7 @@
 
   <script>
     const hosts = [
-      { name: "AgentCore", status: "ok" },
+      { name: "AWS AgentCore", status: "ok" },
       { name: "ChatGPT", status: "ok" },
       { name: "Claude", status: "ok" },
       { name: "Claude Code", status: "ok" },

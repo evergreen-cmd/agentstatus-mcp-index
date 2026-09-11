@@ -7,7 +7,10 @@ const fs = require("fs");
 const path = require("path");
 
 const CHROME =
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  process.env.CHROME ||
+  (process.platform === "darwin"
+    ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    : "/usr/bin/google-chrome");
 const ROOT = __dirname;
 const OUT = path.join(ROOT, "exports");
 
