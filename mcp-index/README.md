@@ -25,8 +25,8 @@ Teammates open the HTTPS link, toggle styles, and use **Download PNG**.
 
 Ready PNGs (when exported): `mcp-index/exports/`
 
-**Skills for Cursor / Claude** (design + wording):  
-`agentstatus-design-skill.zip` · `agentstatus-wording-skill.zip` in this folder (and under `exports/`).
+**Skills for Cursor / Claude** (design + copy):  
+`agentstatus-design-skill.zip` · `agentstatus-copy-skill.zip` (and legacy `agentstatus-wording-skill.zip` alias) in this folder (and under `exports/`).
 
 ---
 
@@ -56,16 +56,17 @@ If you only have read access, **fork** the repo, work there, then open a PR into
 ### What you need
 1. AgentStatus dashboard screenshots for that MCP (at least **Host Compatibility / Steps**, plus one **evidence** sample if useful).
 2. Company logo (official wordmark PNG/SVG, or a clean crop from their site).
-3. Cursor with `agentstatus-design` + `agentstatus-wording` skills loaded (from the zips above).
+3. Cursor with `agentstatus-design` + `agentstatus-copy` skills loaded (from the zips above).
 
 ### Locked copy rules
 - **Claim first:** subject + result + metric + timestamp.  
-  Example: `Cleared tools/call end to end in 8 of 18 hosts on 10 Sep 2026, 13:45 UTC.`  
-  Or: `Failed tools/call in 18 of 18 hosts on 15 Sep 2026, 15:47 UTC.`
+  Example: `Semgrep's MCP completed a tool invoke on 8 of 18 hosts on 10 Sep 2026, 13:45 UTC.`  
+  Or: `Firecrawl's MCP failed a tool invoke in 18 of 18 hosts on 15 Sep 2026, 15:47 UTC.`
+- Do **not** default to `Cleared tools/call…` / `Failed tools/call…` as the lede.
 - Timestamp form: **`DD Mon YYYY, HH:MM UTC`** (or date only if time isn’t on the dash).
 - **No** “MCP INDEX” eyebrow on the card.
 - **No** meta crumb line like `Residential probes · connect ok · discover ok · invoke failed · run FC-…`
-- Factual and timestamped. Do not say the product is “broken.” Name the measured failure (`tools/call`, connect, etc.).
+- Factual and timestamped. Do not say the product is “broken.” Name the measured failure in plain English.
 - No em dashes. No antithesis blades (`X, not Y`). Prefer full sentences where you write prose.
 - Fonts: Plus Jakarta Sans. Colors: `hsl(var(--token))` only. Flat wash backgrounds only.
 
@@ -88,7 +89,8 @@ Copy everything in [`TEAM-PROMPT.md`](TEAM-PROMPT.md) into Cursor (Agent mode), 
 | Zip | Use for |
 |-----|---------|
 | `agentstatus-design-skill.zip` | Tokens, wash, chart kit, logo rules |
-| `agentstatus-wording-skill.zip` | Claim-first copy, AA craft, compound rhythm (anti-staccato), chart chrome |
+| `agentstatus-copy-skill.zip` | Cards / X / LinkedIn / outreach / charts; Exa warm shape; SAT pass; anti-AI bans |
+| `agentstatus-wording-skill.zip` | Legacy alias → use `agentstatus-copy` |
 
 Source folders (if working inside the Design Bible monorepo):  
-`.agents/skills/agentstatus-design/` · `.agents/skills/agentstatus-wording/`
+`.agents/skills/agentstatus-design/` · `.agents/skills/agentstatus-copy/`
