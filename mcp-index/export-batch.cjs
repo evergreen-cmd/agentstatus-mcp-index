@@ -7,7 +7,10 @@ const fs = require("fs");
 const path = require("path");
 
 const CHROME =
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  process.env.CHROME ||
+  (process.platform === "darwin"
+    ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    : "/usr/bin/google-chrome");
 const ROOT = __dirname;
 const OUT = path.join(ROOT, "exports");
 
@@ -120,6 +123,54 @@ const JOBS = [
   {
     file: "semgrep-scorecard.html",
     slug: "semgrep-scorecard-poster-light",
+    wash: "light",
+    style: "poster",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-catalog-navy",
+    wash: "navy",
+    style: "catalog",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-connection-navy",
+    wash: "navy",
+    style: "connection",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-history-navy",
+    wash: "navy",
+    style: "history",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-poster-navy",
+    wash: "navy",
+    style: "poster",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-catalog-light",
+    wash: "light",
+    style: "catalog",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-connection-light",
+    wash: "light",
+    style: "connection",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-history-light",
+    wash: "light",
+    style: "history",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-poster-light",
     wash: "light",
     style: "poster",
   },
