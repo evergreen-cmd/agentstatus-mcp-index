@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgentStatus wording · before / after sample</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --surface-cream: 40 33% 97%;
+      --border: 214.3 31.8% 91.4%;
+      --radius: 0.5rem;
+      --logo-orange: 24.6 95% 53.1%;
+      --ok: 188 38% 38%;
+      --fail: 24.6 95% 53.1%;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: hsl(var(--surface-cream));
+      color: hsl(var(--brand-navy));
+      min-height: 100vh;
+      padding: 1.5rem 1.25rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; }
+    .lede { margin-top: 0.35rem; font-size: 13px; line-height: 1.45; opacity: 0.72; max-width: 40rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      border: 1px solid hsl(var(--brand-navy) / 0.12);
+      border-radius: calc(var(--radius) * 2);
+      background: hsl(0 0% 100% / 0.72);
+      padding: 1rem 1.05rem 1.1rem;
+      box-shadow: 0 18px 36px -28px hsl(var(--brand-navy) / 0.28);
+    }
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 0.55rem;
+    }
+    .tag--bad { color: hsl(var(--fail)); }
+    .tag--good { color: hsl(var(--ok)); }
+    .mini-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid hsl(var(--brand-navy) / 0.1);
+    }
+    .lockup {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .rings {
+      width: 22px; height: 22px; position: relative; flex-shrink: 0;
+    }
+    .rings i {
+      position: absolute; width: 12px; height: 12px; border-radius: 50%;
+      border: 2px solid hsl(188 55% 42%);
+    }
+    .rings i:nth-child(1) { left: 0; top: 5px; }
+    .rings i:nth-child(2) { left: 6px; top: 5px; opacity: 0.85; }
+    .rings i:nth-child(3) { left: 3px; top: 0; opacity: 0.7; }
+    .brand {
+      font-size: 11px; font-weight: 700; opacity: 0.85; white-space: nowrap;
+    }
+    .brand span {
+      text-decoration: underline;
+      text-decoration-color: hsl(var(--logo-orange));
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    .claim {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .claim strong { color: hsl(var(--logo-orange)); font-weight: 700; }
+    .blurb {
+      margin-top: 0.85rem;
+      padding: 0.75rem 0.8rem;
+      border-radius: calc(var(--radius) * 1.25);
+      border: 1px solid hsl(var(--brand-navy) / 0.1);
+      background: hsl(var(--surface-cream));
+      font-size: 13px;
+      font-weight: 550;
+      line-height: 1.45;
+    }
+    .poster {
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid hsl(var(--brand-navy) / 0.08);
+    }
+    .poster__stat {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .poster__stat span { color: hsl(var(--logo-orange)); }
+    .poster__line {
+      margin-top: 0.45rem;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+      max-width: 28rem;
+    }
+    .note {
+      margin-top: 1.25rem;
+      font-size: 12px;
+      opacity: 0.65;
+      line-height: 1.4;
+    }
+    .note a { color: hsl(var(--brand-navy)); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Wording sample · staccato vs compound</h1>
+    <p class="lede">
+      Same facts, new rhythm from <code>agentstatus-wording</code>. Left is the AI-cadence stack;
+      right is the glued sentence you asked for in Slack. Review this before we push.
+    </p>
+
+    <div class="grid" id="sample">
+      <article class="card" data-export="before">
+        <div class="tag tag--bad">Before · sounds generated</div>
+        <div class="mini-top">
+          <div class="lockup">
+            <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
+            Semgrep
+          </div>
+          <div class="brand"><span>agent</span> status</div>
+        </div>
+        <p class="claim">
+          Cleared <strong>tools/call</strong> end to end in <strong>8 of 18</strong> hosts on
+          <strong>10 Sep 2026, 13:45 UTC</strong>.
+        </p>
+        <div class="blurb">
+          tool invokes succeeded on 10 Sep 2026. Median run 5.22s. Two of seven advertised tools stayed listed only.
+        </div>
+        <div class="poster">
+          <p class="poster__stat"><span>8</span> / 18</p>
+          <p class="poster__line">hosts cleared tools/call end to end on 10 Sep 2026, 13:45 UTC. Nine never connected. Cursor broke on invoke.</p>
+        </div>
+      </article>
+
+      <article class="card" data-export="after">
+        <div class="tag tag--good">After · compound glue</div>
+        <div class="mini-top">
+          <div class="lockup">
+            <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
+            Semgrep
+          </div>
+          <div class="brand"><span>agent</span> status</div>
+        </div>
+        <p class="claim">
+          Cleared <strong>tools/call</strong> end to end in <strong>8 of 18</strong> hosts on
+          <strong>10 Sep 2026, 13:45 UTC</strong>.
+        </p>
+        <div class="blurb">
+          Tool invokes succeeded on 10 Sep 2026, and the median run was 5.22s, though only two of seven advertised tools stayed listed.
+        </div>
+        <div class="poster">
+          <p class="poster__stat"><span>8</span> / 18</p>
+          <p class="poster__line">hosts cleared tools/call end to end on 10 Sep 2026, 13:45 UTC, while nine never connected and Cursor broke on invoke (0 of 3 calls).</p>
+        </div>
+      </article>
+    </div>
+
+    <p class="note">
+      Live cards updated the same way:
+      <a href="semgrep-scorecard.html">semgrep-scorecard.html</a> ·
+      <a href="server-scorecard.html">server-scorecard.html</a> (Firecrawl).
+      Say when this looks right and I’ll push to GitHub.
+    </p>
+  </div>
+</body>
+</html>

@@ -33,11 +33,13 @@ Build a full GTM scorecard pack for **{COMPANY_NAME}** from the attached AgentSt
 - No `Residential probes · connect ok · discover ok · invoke failed · run …` lines
 - No “broken” marketing; stay factual and measured
 - No em dashes; no `X, not Y` antithesis blades
+- No staccato status stacks (three short period-stopped facts); glue with *and / but / though / because / so* or commas/semicolons
 - No Tailwind palette classes; no hardcoded random hex for UI chrome (use design tokens / existing card CSS)
 - No Parallax newsletter voice
 
 ### Claim shape examples
 - `Cleared tools/call end to end in 8 of 18 hosts on 10 Sep 2026, 13:45 UTC.`
-- `Failed tools/call in 18 of 18 hosts on 15 Sep 2026, 15:47 UTC.`
+- `Failed tools/call in 18 of 18 hosts on 15 Sep 2026, 15:47 UTC, after connect and discover cleared and invoke returned 401 on scrape.`
+- Bad: `…succeeded on 10 Sep. Median 5.22s. Two of seven stayed listed only.` → join into one compound sentence.
 
 Replace `{COMPANY_NAME}` / `{company-slug}` with the real company before sending.

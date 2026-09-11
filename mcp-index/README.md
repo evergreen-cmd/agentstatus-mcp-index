@@ -88,7 +88,7 @@ Copy everything in [`TEAM-PROMPT.md`](TEAM-PROMPT.md) into Cursor (Agent mode), 
 | Zip | Use for |
 |-----|---------|
 | `agentstatus-design-skill.zip` | Tokens, wash, chart kit, logo rules |
-| `agentstatus-wording-skill.zip` | Claim-first copy, AA craft, chart chrome |
+| `agentstatus-wording-skill.zip` | Claim-first copy, AA craft, compound rhythm (anti-staccato), chart chrome |
 
 Source folders (if working inside the Design Bible monorepo):  
 `.agents/skills/agentstatus-design/` · `.agents/skills/agentstatus-wording/`
