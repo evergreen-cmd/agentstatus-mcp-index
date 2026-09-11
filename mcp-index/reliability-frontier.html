@@ -74,7 +74,7 @@
     html[data-wash="navy"] .footer a { color: hsl(var(--ink-cream)); }
     html[data-wash="navy"] .tile,
     html[data-wash="navy"] .plot-card { background: hsl(var(--brand-navy-deep) / 0.45); border-color: hsl(var(--ink-cream) / 0.14); }
-    html[data-wash="navy"] .callout rect { fill: hsl(var(--brand-navy-deep) / 0.72); stroke: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .callout-bg { fill: hsl(var(--brand-navy-deep) / 0.72); stroke: hsl(var(--ink-cream) / 0.18); }
     html[data-wash="navy"] .callout text { fill: hsl(var(--ink-cream) / 0.78); }
     html[data-wash="navy"] .callout .callout-k { fill: hsl(var(--ink-cream)); }
     html[data-wash="navy"] .top { border-color: hsl(var(--ink-cream) / 0.18); }
@@ -122,6 +122,7 @@
     html[data-wash="light"] .footer a { color: hsl(var(--brand-navy)); }
     html[data-wash="light"] .tile,
     html[data-wash="light"] .plot-card { background: hsl(0 0% 100% / 0.55); border-color: hsl(var(--brand-navy) / 0.1); }
+    html[data-wash="light"] .callout-bg { fill: hsl(0 0% 100% / 0.72); stroke: hsl(var(--brand-navy) / 0.1); }
     html[data-wash="light"] .callout text { fill: hsl(var(--brand-navy) / 0.62); }
     html[data-wash="light"] .callout .callout-k { fill: hsl(var(--brand-navy)); }
     html[data-wash="light"] .top { border-color: hsl(var(--brand-navy) / 0.12); }
@@ -201,8 +202,9 @@
     .axis { font-size: 11px; font-weight: 600; }
     .axis-title { font-size: 12px; font-weight: 700; }
     .callout { pointer-events: none; }
-    .callout text { font-size: 11px; }
-    .callout .callout-k { font-weight: 700; }
+    .callout-bg { fill: hsl(0 0% 100% / 0.72); stroke: hsl(var(--brand-navy) / 0.1); }
+    .callout text { font-size: 11px; fill: hsl(var(--brand-navy) / 0.62); }
+    .callout .callout-k { font-weight: 700; fill: hsl(var(--brand-navy)); }
 
     .hint {
       text-align: center; font-size: 12px; font-weight: 600; opacity: 0.65; margin-top: 0.35rem;
@@ -414,6 +416,12 @@
     const params = new URLSearchParams(location.search);
     if (["score", "tools", "bars"].includes(params.get("view"))) view = params.get("view");
     if (["score", "tools", "bars"].includes(params.get("style"))) view = params.get("style");
+    if (params.get("wash") === "navy" || params.get("wash") === "light") {
+      root.setAttribute("data-wash", params.get("wash"));
+      document.querySelectorAll("[data-wash-btn]").forEach((b) =>
+        b.classList.toggle("is-on", b.dataset.washBtn === params.get("wash"))
+      );
+    }
 
     function xOf(p95) { return M.l + (p95 / X_MAX) * PW; }
     function yOf(val, yMin, yMax) { return M.t + ((yMax - val) / (yMax - yMin)) * PH; }
@@ -482,8 +490,8 @@
         }
       });
       const callout = view === "tools"
-        ? '<g class="callout"><rect x="' + xOf(0.8) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) - 8) + '" width="236" height="50" rx="8" /><text class="callout-k" x="' + (xOf(0.8) + 12) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) + 12) + '">Firecrawl answers, then misses.</text><text x="' + (xOf(0.8) + 12) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) + 28) + '">P95 10s · tool success 53.3% · invoke 22%.</text></g>'
-        : '<g class="callout"><rect x="' + xOf(20) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) - 8) + '" width="236" height="50" rx="8" /><text class="callout-k" x="' + (xOf(20) + 12) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) + 12) + '">GitMCP docs sit past 35s.</text><text x="' + (xOf(20) + 12) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) + 28) + '">Prisma, Tailwind, Redis, Next.js still clear tools.</text></g>';
+        ? '<g class="callout"><rect class="callout-bg" x="' + xOf(0.8) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) - 8) + '" width="236" height="50" rx="8" /><text class="callout-k" x="' + (xOf(0.8) + 12) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) + 12) + '">Firecrawl answers, then misses.</text><text x="' + (xOf(0.8) + 12) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) + 28) + '">P95 10s · tool success 53.3% · invoke 22%.</text></g>'
+        : '<g class="callout"><rect class="callout-bg" x="' + xOf(20) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) - 8) + '" width="236" height="50" rx="8" /><text class="callout-k" x="' + (xOf(20) + 12) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) + 12) + '">GitMCP docs sit past 35s.</text><text x="' + (xOf(20) + 12) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) + 28) + '">Prisma, Tailwind, Redis, Next.js still clear tools.</text></g>';
       return '<svg viewBox="0 0 ' + W + " " + H + '" role="img">' +
         '<rect class="quad" x="' + M.l + '" y="' + M.t + '" width="' + (quadX - M.l) + '" height="' + (quadY - M.t) + '" />' +
         '<rect class="slow" x="' + slowX + '" y="' + M.t + '" width="' + (W - M.r - slowX) + '" height="' + PH + '" />' +
