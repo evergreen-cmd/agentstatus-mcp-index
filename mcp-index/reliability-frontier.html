@@ -187,14 +187,22 @@
       width: 12px;
       height: 12px;
       border-radius: 2px;
-      background: hsl(var(--chart-4) / 0.22);
-      border: 1px solid hsl(var(--chart-4) / 0.35);
+      background: hsl(var(--chart-4) / 0.28);
+      border: 1px solid hsl(var(--chart-4) / 0.45);
     }
 
     .swatch--pareto {
       width: 18px;
       height: 0;
-      border-top: 2px dotted hsl(var(--brand-navy));
+      border-top: 2.5px dotted hsl(var(--brand-navy));
+      border-radius: 0;
+      background: none;
+    }
+
+    .swatch--median {
+      width: 18px;
+      height: 0;
+      border-top: 1.5px solid hsl(var(--muted-foreground) / 0.55);
       border-radius: 0;
       background: none;
     }
@@ -236,26 +244,32 @@
     .grid-line { stroke: hsl(var(--border)); stroke-width: 1; }
 
     .quad {
-      fill: hsl(var(--chart-4) / 0.12);
+      fill: hsl(var(--chart-4) / 0.16);
     }
 
     .slow {
-      fill: hsl(var(--muted) / 0.7);
+      fill: hsl(var(--muted) / 0.55);
     }
 
     .median {
-      stroke: hsl(var(--muted-foreground) / 0.45);
+      stroke: hsl(var(--muted-foreground) / 0.5);
       stroke-width: 1.25;
-      stroke-dasharray: 3 4;
     }
 
     .pareto {
       fill: none;
       stroke: hsl(var(--brand-navy));
-      stroke-width: 1.75;
-      stroke-dasharray: 3 5;
+      stroke-width: 2.5;
+      stroke-dasharray: 1.5 5;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+
+    .frontier-ring {
+      fill: none;
+      stroke: hsl(var(--brand-navy));
+      stroke-width: 1.5;
+      pointer-events: none;
     }
 
     .dot {
@@ -514,7 +528,7 @@
       font-weight: 700;
     }
 
-    .read details[open] summary::after { content: "–"; }
+    .read details[open] summary::after { content: "\2212"; }
 
     .read p {
       font-size: 12.5px;
@@ -552,7 +566,7 @@
   <div class="chooser">
     <h1>MCP Reliability Index charts</h1>
     <p>
-      Artificial Analysis density on AgentStatus tokens. 14 well-known servers from the
+      14 well-known servers from the
       11 Sep 2026, 15:07 UTC feed. Zero-success and login-gated rows left out.
     </p>
     <div class="row" role="tablist" aria-label="Chart view">
@@ -604,7 +618,7 @@
       { name: "Semgrep", short: "Semgrep", mark: "SE", cat: "dev_tools", score: 98.9, tool: 100, reach: 100, spec: 100, p95: 5.8, runs: 2, rank: null, status: "operational", prov: true, homepage: "semgrep.dev" },
       { name: "Hugging Face", short: "Hugging Face", mark: "HF", cat: "dev_tools", score: 95.0, tool: 100, reach: 95.2, spec: 96.7, p95: 7.8, runs: 42, rank: 184, status: "degraded", prov: false, homepage: "huggingface.co" },
       { name: "Exa AI", short: "Exa AI", mark: "EA", cat: "search", score: 92.9, tool: 98.4, reach: 90.5, spec: 90.0, p95: 6.8, runs: 21, rank: 374, status: "operational", prov: false, homepage: "exa.ai" },
-      { name: "Microsoft Learn", short: "Microsoft Learn", mark: "ML", cat: "dev_tools", score: 92.8, tool: 97.9, reach: 100, spec: 100, p95: 11, runs: 59, rank: 376, status: "operational", prov: false, homepage: "learn.microsoft.com" },
+      { name: "Microsoft Learn", short: "MS Learn", mark: "ML", cat: "dev_tools", score: 92.8, tool: 97.9, reach: 100, spec: 100, p95: 11, runs: 59, rank: 376, status: "operational", prov: false, homepage: "learn.microsoft.com" },
       { name: "Svelte", short: "Svelte", mark: "SV", cat: "dev_tools", score: 91.3, tool: 100, reach: 98.0, spec: 98.0, p95: 12, runs: 51, rank: 489, status: "operational", prov: false, homepage: "svelte.dev" },
       { name: "Wise", short: "Wise", mark: "WI", cat: "payments", score: 91.0, tool: 94.0, reach: 100, spec: 94.5, p95: 11, runs: 50, rank: 513, status: "degraded", prov: false, homepage: "wise.com" },
       { name: "Context7", short: "Context7", mark: "CO", cat: "dev_tools", score: 87.5, tool: 94.9, reach: 97.9, spec: 98.6, p95: 15, runs: 48, rank: 821, status: "operational", prov: false, homepage: "context7.com" },
@@ -617,8 +631,8 @@
     ];
 
     const W = 1040;
-    const H = 520;
-    const M = { l: 64, r: 28, t: 18, b: 48 };
+    const H = 540;
+    const M = { l: 72, r: 36, t: 28, b: 52 };
     const PW = W - M.l - M.r;
     const PH = H - M.t - M.b;
     const X_MAX = 48;
@@ -627,6 +641,12 @@
     const ATTR_P95 = 12;
 
     let view = document.documentElement.getAttribute("data-view") || "score";
+    const params = new URLSearchParams(location.search);
+    if (["score", "tools", "bars"].includes(params.get("view"))) {
+      view = params.get("view");
+    } else if (["score", "tools", "bars"].includes(location.hash.replace("#", ""))) {
+      view = location.hash.replace("#", "");
+    }
 
     function xOf(p95) { return M.l + (p95 / X_MAX) * PW; }
     function yOf(val, yMin, yMax) {
@@ -688,7 +708,8 @@
     function legendHtml() {
       return (
         '<span><i class="swatch swatch--quad"></i>Most attractive quadrant</span>' +
-        '<span><i class="swatch swatch--pareto"></i>Ranked Pareto line</span>' +
+        '<span><i class="swatch swatch--pareto"></i>Ranked Pareto</span>' +
+        '<span><i class="swatch swatch--median"></i>Index median P95</span>' +
         '<span><i class="swatch swatch--prov"></i>Provisional</span>' +
         '<span><i class="swatch swatch--dev"></i>Dev Tools</span>' +
         '<span><i class="swatch swatch--search"></i>Search</span>' +
@@ -698,25 +719,44 @@
       );
     }
 
+    const LABEL_SCORE = {
+      "AWS Knowledge": [10, -14],
+      Semgrep: [10, 16],
+      "Hugging Face": [11, -10],
+      "Exa AI": [-54, 16],
+      "MS Learn": [12, -16],
+      Svelte: [12, 16],
+      Wise: [-38, 18],
+      Context7: [10, -8],
+      Tavily: [10, 14],
+      Prisma: [10, -14],
+      "Tailwind CSS": [10, 16],
+      Firecrawl: [12, 16],
+      Redis: [-46, 16],
+      "Next.js": [10, 16],
+    };
+
+    const LABEL_TOOLS = {
+      "AWS Knowledge": [10, -14],
+      Semgrep: [10, 16],
+      "Hugging Face": [12, -16],
+      "Exa AI": [-54, 16],
+      "MS Learn": [12, 20],
+      Svelte: [12, -16],
+      Wise: [-36, 18],
+      Context7: [10, 16],
+      Tavily: [10, 14],
+      Prisma: [10, -14],
+      "Tailwind CSS": [10, 16],
+      Firecrawl: [12, 18],
+      Redis: [10, 16],
+      "Next.js": [-52, 16],
+    };
+
     function labelPos(s, yKey, yMin, yMax) {
       const x = xOf(s.p95);
       const y = yOf(s[yKey], yMin, yMax);
-      const map = {
-        "AWS Knowledge": [8, -12],
-        Semgrep: [10, 4],
-        "Hugging Face": [10, -6],
-        "Exa AI": [-52, 14],
-        "Microsoft Learn": [10, -8],
-        Svelte: [10, 4],
-        Wise: [-36, 16],
-        Context7: [10, -2],
-        Tavily: [10, 4],
-        Prisma: [8, -12],
-        "Tailwind CSS": [8, 12],
-        Firecrawl: [-62, 4],
-        Redis: [8, 12],
-        "Next.js": [-48, 4],
-      };
+      const map = yKey === "tool" ? LABEL_TOOLS : LABEL_SCORE;
       const d = map[s.short] || [10, -6];
       return { x: x + d[0], y: y + d[1] };
     }
@@ -744,13 +784,22 @@
 
       const paretoPts = front.map((s) => xOf(s.p95) + "," + yOf(s[yKey], cfg.yMin, cfg.yMax)).join(" ");
 
+      let rings = "";
+      front.forEach((s) => {
+        rings +=
+          '<circle class="frontier-ring" cx="' +
+          xOf(s.p95) +
+          '" cy="' +
+          yOf(s[yKey], cfg.yMin, cfg.yMax) +
+          '" r="11" />';
+      });
+
       let dots = "";
       SERVERS.forEach((s, i) => {
         const x = xOf(s.p95);
         const y = yOf(s[yKey], cfg.yMin, cfg.yMax);
         const fill = CAT[s.cat].fill;
         const cls = s.prov ? "dot dot--prov" : "dot";
-        const stroke = s.prov ? fill : "hsl(var(--card))";
         dots +=
           '<circle class="' +
           cls +
@@ -767,54 +816,56 @@
           '" />';
         const lp = labelPos(s, yKey, cfg.yMin, cfg.yMax);
         const lcls = s.alert ? "label label--alert" : s.prov ? "label label--muted" : "label";
-        dots +=
-          '<text class="' +
-          lcls +
-          '" x="' +
-          lp.x +
-          '" y="' +
-          lp.y +
-          '">' +
-          s.short +
-          (s.prov ? " (prov.)" : "") +
-          "</text>";
+        if (!(view === "tools" && s.prov)) {
+          dots +=
+            '<text class="' +
+            lcls +
+            '" x="' +
+            lp.x +
+            '" y="' +
+            lp.y +
+            '">' +
+            s.short +
+            (s.prov ? " (prov.)" : "") +
+            "</text>";
+        }
       });
 
       const callout =
         view === "tools"
           ? '<g class="callout">' +
             '<rect x="' +
-            (xOf(10) - 210) +
+            xOf(0.6) +
             '" y="' +
-            (yOf(53.3, cfg.yMin, cfg.yMax) - 58) +
-            '" width="200" height="50" rx="6" />' +
+            (yOf(66, cfg.yMin, cfg.yMax) - 8) +
+            '" width="232" height="50" rx="6" />' +
             '<text class="callout-k" x="' +
-            (xOf(10) - 198) +
+            (xOf(0.6) + 12) +
             '" y="' +
-            (yOf(53.3, cfg.yMin, cfg.yMax) - 36) +
+            (yOf(66, cfg.yMin, cfg.yMax) + 12) +
             '">Firecrawl answers, then misses.</text>' +
             '<text x="' +
-            (xOf(10) - 198) +
+            (xOf(0.6) + 12) +
             '" y="' +
-            (yOf(53.3, cfg.yMin, cfg.yMax) - 20) +
+            (yOf(66, cfg.yMin, cfg.yMax) + 28) +
             '">P95 10s · tool success 53.3% · invoke 22%.</text>' +
             "</g>"
           : view === "score"
           ? '<g class="callout">' +
             '<rect x="' +
-            (xOf(36) - 8) +
+            xOf(20) +
             '" y="' +
-            (yOf(90, cfg.yMin, cfg.yMax) - 10) +
-            '" width="228" height="50" rx="6" />' +
+            (yOf(94, cfg.yMin, cfg.yMax) - 8) +
+            '" width="236" height="50" rx="6" />' +
             '<text class="callout-k" x="' +
-            (xOf(36) + 6) +
+            (xOf(20) + 12) +
             '" y="' +
-            (yOf(90, cfg.yMin, cfg.yMax) + 10) +
+            (yOf(94, cfg.yMin, cfg.yMax) + 12) +
             '">GitMCP docs sit past 35s.</text>' +
             '<text x="' +
-            (xOf(36) + 6) +
+            (xOf(20) + 12) +
             '" y="' +
-            (yOf(90, cfg.yMin, cfg.yMax) + 26) +
+            (yOf(94, cfg.yMin, cfg.yMax) + 28) +
             '">Prisma, Tailwind, Redis, Next.js still clear tools.</text>' +
             "</g>"
           : "";
@@ -855,21 +906,22 @@
         '" y2="' +
         (H - M.b) +
         '" />' +
+        '<text class="axis" x="' +
+        (slowX + 6) +
+        '" y="' +
+        (M.t + 14) +
+        '">Index median 14.5s</text>' +
         '<polyline class="pareto" points="' +
         paretoPts +
         '" />' +
         callout +
+        rings +
         dots +
-        '<text class="axis-title" text-anchor="middle" transform="translate(16,' +
+        '<text class="axis-title" text-anchor="middle" transform="translate(18,' +
         (M.t + PH / 2) +
         ') rotate(-90)">' +
         cfg.yTitle +
         "</text>" +
-        '<text class="watermark" text-anchor="end" x="' +
-        (W - M.r) +
-        '" y="' +
-        (M.t + 14) +
-        '">AgentStatus</text>' +
         "</svg>" +
         '<div class="tooltip" id="tip"></div>'
       );
@@ -878,7 +930,7 @@
     function renderBars() {
       const rows = SERVERS.slice().sort((a, b) => b.score - a.score);
       const yMin = 50;
-      const yMax = 100;
+      const yMax = 104;
       const ticks = [50, 60, 70, 80, 90, 100];
       let grid = "";
       ticks.forEach((t) => {
@@ -938,7 +990,7 @@
       }
       return (
         "<details open><summary>How to read this chart</summary><p>" +
-        "Teal band is Score ≥ 90 and P95 ≤ 12s. Grey veil is slower than the Index median P95 (14.5s). Dotted line is the ranked Pareto frontier. Hollow dots are provisional." +
+        "Teal band is Score ≥ 90 and P95 ≤ 12s. Grey veil starts at the Index median P95 (14.5s). Navy dotted segment is the ranked Pareto (Exa AI then Hugging Face). Hollow dots are provisional." +
         "</p></details>" +
         "<details><summary>" +
         cfg.readTitle +
