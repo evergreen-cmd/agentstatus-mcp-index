@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MCP Index · Share cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --logo-orange: 24.6 95% 53.1%;
+      --radius: 0.5rem;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      min-height: 100vh;
+      padding: 2.5rem 1.5rem 3rem;
+      background: hsl(var(--brand-navy-deep));
+      color: hsl(var(--ink-cream));
+      -webkit-font-smoothing: antialiased;
+    }
+    main { max-width: 40rem; margin: 0 auto; }
+    h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; }
+    p { margin-top: 0.65rem; font-size: 0.95rem; line-height: 1.5; opacity: 0.8; }
+    ul { margin-top: 1.5rem; list-style: none; display: grid; gap: 0.55rem; }
+    a {
+      display: block;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--ink-cream) / 0.18);
+      background: hsl(var(--brand-navy));
+      color: hsl(var(--ink-cream));
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    a:hover { border-color: hsl(var(--logo-orange)); }
+    .meta { margin-top: 1.75rem; font-size: 0.8rem; opacity: 0.55; }
+    .meta a { display: inline; padding: 0; border: 0; background: none; font-weight: 600; color: hsl(var(--logo-orange)); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MCP Index share cards</h1>
+    <p>Open a card, toggle navy/light and matrix/threshold/poster, then Download PNG. Team guide: README.md</p>
+    <ul>
+      <li><a href="semgrep-scorecard.html">Semgrep scorecard</a></li>
+      <li><a href="server-scorecard.html">Firecrawl scorecard</a></li>
+      <li><a href="server-comparison.html">Host compatibility comparison</a></li>
+      <li><a href="cycle-12-time-to-first-result.html">Cycle-12 · Time to first result</a></li>
+      <li><a href="infographic-styles.html">Infographic styles lab</a></li>
+      <li><a href="TEAM-PROMPT.md">Cursor prompt for a new company</a></li>
+      <li><a href="README.md">Team README</a></li>
+    </ul>
+    <p class="meta">Repo: <a href="https://github.com/evergreen-cmd/agentstatus-mcp-index">evergreen-cmd/agentstatus-mcp-index</a></p>
+  </main>
+</body>
+</html>
