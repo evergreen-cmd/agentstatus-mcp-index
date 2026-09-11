@@ -264,6 +264,11 @@
       object-fit: contain;
       display: block;
     }
+    html[data-wash="navy"] .mark img[src$="prisma.png"],
+    html[data-wash="navy"] .mark img[src$="tavily.png"],
+    html[data-wash="navy"] .mark img[src$="nextjs.png"] {
+      filter: invert(1);
+    }
     .x__name {
       font-weight: 700; transform: rotate(-48deg); transform-origin: 50% 0;
       white-space: nowrap; display: inline-block;
