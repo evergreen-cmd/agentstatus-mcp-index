@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MCP Index · Reliability Score vs P95 latency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --primary: 221.2 83.2% 53.3%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 210 40% 96%;
+      --secondary-foreground: 222.2 84% 4.9%;
+      --muted: 210 40% 96%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96%;
+      --accent-foreground: 222.2 84% 4.9%;
+      --border: 214.3 31.8% 91.4%;
+      --ring: 221.2 83.2% 53.3%;
+      --radius: 0.5rem;
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --logo-orange: 24.6 95% 53.1%;
+      --chart-1: 40 24% 97.5%;
+      --chart-2: 214 20% 72%;
+      --chart-3: 221.2 83.2% 53.3%;
+      --chart-4: 188 38% 38%;
+      --chart-5: 214 16% 42%;
+      --chart-6: 214 39% 17%;
+      --chart-7: 30 12% 55%;
+      --chart-8: 18 48% 38%;
+      --chart-9: 24.6 95% 53.1%;
+      --chart-10: 45 70% 58%;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: hsl(var(--muted));
+      color: hsl(var(--brand-navy));
+      min-height: 100vh;
+      padding: 1.25rem 1.25rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .chooser {
+      max-width: 1120px;
+      margin: 0 auto 1rem;
+    }
+
+    .chooser h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .chooser p {
+      margin-top: 0.3rem;
+      font-size: 13px;
+      color: hsl(var(--muted-foreground));
+      max-width: 42rem;
+      line-height: 1.45;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.85rem;
+      align-items: center;
+    }
+
+    .row span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: hsl(var(--muted-foreground));
+      margin-right: 0.15rem;
+    }
+
+    .row button {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0.45rem 0.8rem;
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      background: hsl(var(--card));
+      color: hsl(var(--brand-navy));
+      cursor: pointer;
+    }
+
+    .row button.is-on {
+      background: hsl(var(--primary));
+      border-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    .stage { max-width: 1120px; margin: 0 auto; }
+
+    .frame {
+      position: relative;
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) * 2);
+      padding: 1.35rem 1.4rem 1.15rem;
+      color: hsl(var(--brand-navy));
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .top h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .sub {
+      margin-top: 0.35rem;
+      font-size: 13px;
+      line-height: 1.45;
+      color: hsl(var(--muted-foreground));
+      max-width: 38rem;
+    }
+
+    .brand img {
+      display: block;
+      height: 28px;
+      width: auto;
+    }
+
+    .count {
+      margin-top: 0.45rem;
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 650;
+      color: hsl(var(--brand-navy));
+      background: hsl(var(--secondary));
+      border: 1px solid hsl(var(--border));
+      border-radius: 999px;
+      padding: 0.28rem 0.7rem;
+      white-space: nowrap;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.05rem;
+      font-size: 12px;
+      font-weight: 600;
+      color: hsl(var(--brand-navy));
+      margin: 0.15rem 0 0.7rem;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .swatch--quad {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      background: hsl(var(--chart-4) / 0.22);
+      border: 1px solid hsl(var(--chart-4) / 0.35);
+    }
+
+    .swatch--pareto {
+      width: 18px;
+      height: 0;
+      border-top: 2px dotted hsl(var(--brand-navy));
+      border-radius: 0;
+      background: none;
+    }
+
+    .swatch--prov {
+      background: hsl(var(--card));
+      box-shadow: inset 0 0 0 2px hsl(var(--chart-3));
+    }
+
+    .swatch--dev { background: hsl(var(--chart-3)); }
+    .swatch--search { background: hsl(var(--chart-4)); }
+    .swatch--pay { background: hsl(var(--chart-9)); }
+    .swatch--design { background: hsl(var(--chart-10)); }
+    .swatch--data { background: hsl(var(--chart-5)); }
+
+    .plot-wrap {
+      position: relative;
+      margin-top: 0.15rem;
+    }
+
+    .plot-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .axis {
+      font-size: 11px;
+      font-weight: 600;
+      fill: hsl(var(--muted-foreground));
+    }
+
+    .axis-title {
+      font-size: 12px;
+      font-weight: 700;
+      fill: hsl(var(--brand-navy));
+    }
+
+    .grid-line { stroke: hsl(var(--border)); stroke-width: 1; }
+
+    .quad {
+      fill: hsl(var(--chart-4) / 0.12);
+    }
+
+    .slow {
+      fill: hsl(var(--muted) / 0.7);
+    }
+
+    .median {
+      stroke: hsl(var(--muted-foreground) / 0.45);
+      stroke-width: 1.25;
+      stroke-dasharray: 3 4;
+    }
+
+    .pareto {
+      fill: none;
+      stroke: hsl(var(--brand-navy));
+      stroke-width: 1.75;
+      stroke-dasharray: 3 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dot {
+      stroke: hsl(var(--card));
+      stroke-width: 2;
+      cursor: pointer;
+    }
+
+    .dot--prov {
+      fill: hsl(var(--card));
+      stroke-width: 2.4;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 650;
+      fill: hsl(var(--brand-navy));
+      pointer-events: none;
+    }
+
+    .label--muted { fill: hsl(var(--muted-foreground)); }
+    .label--alert { fill: hsl(var(--logo-orange)); font-weight: 700; }
+
+    .callout {
+      pointer-events: none;
+    }
+
+    .callout rect {
+      fill: hsl(var(--card) / 0.92);
+      stroke: hsl(var(--border));
+      stroke-width: 1;
+    }
+
+    .callout text {
+      font-size: 11px;
+      fill: hsl(var(--muted-foreground));
+    }
+
+    .callout .callout-k {
+      font-weight: 700;
+      fill: hsl(var(--brand-navy));
+    }
+
+    .watermark {
+      font-size: 12px;
+      font-weight: 700;
+      fill: hsl(var(--muted-foreground) / 0.7);
+    }
+
+    .tooltip {
+      position: absolute;
+      z-index: 5;
+      min-width: 200px;
+      max-width: 260px;
+      padding: 0.55rem 0.7rem 0.6rem;
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      box-shadow: 0 10px 24px -16px hsl(var(--brand-navy) / 0.45);
+      font-size: 12px;
+      line-height: 1.4;
+      color: hsl(var(--brand-navy));
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-10px, 8px);
+      transition: opacity 0.12s ease;
+    }
+
+    .tooltip.is-on { opacity: 1; }
+
+    .tooltip strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.15rem;
+    }
+
+    .tooltip .meta {
+      color: hsl(var(--muted-foreground));
+      font-weight: 500;
+      margin-bottom: 0.35rem;
+    }
+
+    .tooltip .kv {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.12rem 0.7rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tooltip .kv span:nth-child(odd) { color: hsl(var(--muted-foreground)); }
+    .tooltip .kv span:nth-child(even) { font-weight: 700; }
+
+    .bars {
+      position: relative;
+      height: 360px;
+      margin: 0.4rem 0 0.2rem;
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .bars .grid {
+      position: absolute;
+      inset: 0 0 0 2.4rem;
+      pointer-events: none;
+    }
+
+    .bars .gline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid hsl(var(--border));
+    }
+
+    .bars .ylab {
+      position: absolute;
+      left: 0;
+      width: 2.15rem;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      text-align: right;
+    }
+
+    .bar-row {
+      position: absolute;
+      left: 2.4rem;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 0.35rem;
+      padding: 0 0.2rem;
+    }
+
+    .col {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .val {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.28rem;
+      color: hsl(var(--brand-navy));
+      white-space: nowrap;
+    }
+
+    .bar {
+      width: 62%;
+      max-width: 42px;
+      border-radius: 4px 4px 2px 2px;
+      min-height: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar--dev { background: hsl(var(--chart-3)); }
+    .bar--search { background: hsl(var(--chart-4)); }
+    .bar--pay { background: hsl(var(--chart-9)); }
+    .bar--design { background: hsl(var(--chart-10)); }
+    .bar--data { background: hsl(var(--chart-5)); }
+
+    .bar--prov::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        hsl(var(--card) / 0.45) 0 3px,
+        transparent 3px 7px
+      );
+    }
+
+    .x-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.35rem;
+      padding: 2.35rem 0.2rem 0 2.4rem;
+      min-height: 6.4rem;
+    }
+
+    .x {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .mark {
+      width: 22px;
+      height: 22px;
+      margin: 0 auto 0.35rem;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: hsl(var(--primary-foreground));
+    }
+
+    .mark--dev { background: hsl(var(--chart-3)); }
+    .mark--search { background: hsl(var(--chart-4)); }
+    .mark--pay { background: hsl(var(--chart-9)); color: hsl(var(--brand-navy-deep)); }
+    .mark--design { background: hsl(var(--chart-10)); color: hsl(var(--brand-navy)); }
+    .mark--data { background: hsl(var(--chart-5)); }
+
+    .x__name {
+      font-weight: 700;
+      color: hsl(var(--brand-navy));
+      transform: rotate(-48deg);
+      transform-origin: 50% 0;
+      white-space: nowrap;
+      display: inline-block;
+      margin-top: 0.15rem;
+    }
+
+    .read {
+      margin-top: 0.95rem;
+      border-top: 1px solid hsl(var(--border));
+      padding-top: 0.65rem;
+    }
+
+    .read details {
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .read summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: hsl(var(--brand-navy));
+      padding: 0.55rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .read summary::-webkit-details-marker { display: none; }
+
+    .read summary::after {
+      content: "+";
+      color: hsl(var(--muted-foreground));
+      font-weight: 700;
+    }
+
+    .read details[open] summary::after { content: "–"; }
+
+    .read p {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: hsl(var(--muted-foreground));
+      padding: 0 0 0.75rem;
+      max-width: 46rem;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 0.85rem;
+      font-size: 12px;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .footer a {
+      color: hsl(var(--brand-navy));
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: hsl(var(--muted-foreground));
+      text-align: center;
+      margin-top: 0.35rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="chooser">
+    <h1>MCP Reliability Index charts</h1>
+    <p>
+      Artificial Analysis density on AgentStatus tokens. 14 well-known servers from the
+      11 Sep 2026, 15:07 UTC feed. Zero-success and login-gated rows left out.
+    </p>
+    <div class="row" role="tablist" aria-label="Chart view">
+      <span>View</span>
+      <button type="button" class="is-on" data-view="score">Score × latency</button>
+      <button type="button" data-view="tools">Tool success × latency</button>
+      <button type="button" data-view="bars">Score ranking</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="frame" aria-label="MCP Index chart">
+      <header class="top">
+        <div>
+          <h2 id="chart-title"></h2>
+          <p class="sub" id="chart-sub"></p>
+        </div>
+        <div class="brand">
+          <img src="agentstatus-wordmark.svg" alt="AgentStatus" width="180" height="55" />
+          <div class="count" id="chart-count">14 of 33 well-known</div>
+        </div>
+      </header>
+
+      <div class="legend" id="legend"></div>
+      <div class="plot-wrap" id="plot"></div>
+      <p class="hint" id="x-hint"></p>
+
+      <div class="read" id="read"></div>
+      <footer class="footer">
+        <p>mcp-index feed · 11 Sep 2026, 15:07 UTC · residential probes</p>
+        <p><a href="https://agentstatus.dev/mcp-index">agentstatus.dev/mcp-index</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const CAT = {
+      dev_tools: { key: "dev", label: "Dev Tools", fill: "hsl(var(--chart-3))" },
+      search: { key: "search", label: "Search", fill: "hsl(var(--chart-4))" },
+      payments: { key: "pay", label: "Payments", fill: "hsl(var(--chart-9))" },
+      design: { key: "design", label: "Design", fill: "hsl(var(--chart-10))" },
+      data_storage: { key: "data", label: "Data & Storage", fill: "hsl(var(--chart-5))" },
+    };
+
+    /* Snapshot: mcp-index feed 2026-09-11 15:07 UTC. Score = Index redesign
+       (reach 35 · tool 30 · speed 20 · spec 15). Probe columns are live. */
+    const SERVERS = [
+      { name: "AWS Knowledge", short: "AWS Knowledge", mark: "AK", cat: "dev_tools", score: 99.7, tool: 100, reach: 100, spec: 100, p95: 4.0, runs: 13, rank: null, status: "operational", prov: true, homepage: "aws.amazon.com" },
+      { name: "Semgrep", short: "Semgrep", mark: "SE", cat: "dev_tools", score: 98.9, tool: 100, reach: 100, spec: 100, p95: 5.8, runs: 2, rank: null, status: "operational", prov: true, homepage: "semgrep.dev" },
+      { name: "Hugging Face", short: "Hugging Face", mark: "HF", cat: "dev_tools", score: 95.0, tool: 100, reach: 95.2, spec: 96.7, p95: 7.8, runs: 42, rank: 184, status: "degraded", prov: false, homepage: "huggingface.co" },
+      { name: "Exa AI", short: "Exa AI", mark: "EA", cat: "search", score: 92.9, tool: 98.4, reach: 90.5, spec: 90.0, p95: 6.8, runs: 21, rank: 374, status: "operational", prov: false, homepage: "exa.ai" },
+      { name: "Microsoft Learn", short: "Microsoft Learn", mark: "ML", cat: "dev_tools", score: 92.8, tool: 97.9, reach: 100, spec: 100, p95: 11, runs: 59, rank: 376, status: "operational", prov: false, homepage: "learn.microsoft.com" },
+      { name: "Svelte", short: "Svelte", mark: "SV", cat: "dev_tools", score: 91.3, tool: 100, reach: 98.0, spec: 98.0, p95: 12, runs: 51, rank: 489, status: "operational", prov: false, homepage: "svelte.dev" },
+      { name: "Wise", short: "Wise", mark: "WI", cat: "payments", score: 91.0, tool: 94.0, reach: 100, spec: 94.5, p95: 11, runs: 50, rank: 513, status: "degraded", prov: false, homepage: "wise.com" },
+      { name: "Context7", short: "Context7", mark: "CO", cat: "dev_tools", score: 87.5, tool: 94.9, reach: 97.9, spec: 98.6, p95: 15, runs: 48, rank: 821, status: "operational", prov: false, homepage: "context7.com" },
+      { name: "Tavily", short: "Tavily", mark: "TA", cat: "search", score: 83.5, tool: 86.4, reach: 100, spec: 95.6, p95: 17, runs: 42, rank: 1219, status: "degraded", prov: false, homepage: "tavily.com" },
+      { name: "Prisma (GitMCP)", short: "Prisma", mark: "PG", cat: "dev_tools", score: 81.2, tool: 98.9, reach: 100, spec: 99.6, p95: 36, runs: 48, rank: 1436, status: "operational", prov: false, homepage: "prisma.io" },
+      { name: "Tailwind CSS (GitMCP)", short: "Tailwind CSS", mark: "TC", cat: "design", score: 80.6, tool: 100, reach: 98.1, spec: 98.1, p95: 37, runs: 53, rank: 1504, status: "operational", prov: false, homepage: "tailwindcss.com" },
+      { name: "Firecrawl", short: "Firecrawl", mark: "FI", cat: "search", score: 78.1, tool: 53.3, reach: 100, spec: 84.3, p95: 10, runs: 36, rank: 1725, status: "degraded", prov: false, homepage: "firecrawl.dev", alert: true },
+      { name: "Redis (GitMCP)", short: "Redis", mark: "RG", cat: "data_storage", score: 77.9, tool: 97.1, reach: 95.1, spec: 93.8, p95: 38, runs: 61, rank: 1732, status: "operational", prov: false, homepage: "redis.io" },
+      { name: "Next.js (GitMCP)", short: "Next.js", mark: "NJ", cat: "dev_tools", score: 77.4, tool: 93.4, reach: 96.6, spec: 96.4, p95: 43, runs: 59, rank: 1775, status: "operational", prov: false, homepage: "nextjs.org" },
+    ];
+
+    const W = 1040;
+    const H = 520;
+    const M = { l: 64, r: 28, t: 18, b: 48 };
+    const PW = W - M.l - M.r;
+    const PH = H - M.t - M.b;
+    const X_MAX = 48;
+    const MEDIAN_P95 = 14.5;
+    const ATTR_SCORE = 90;
+    const ATTR_P95 = 12;
+
+    let view = document.documentElement.getAttribute("data-view") || "score";
+
+    function xOf(p95) { return M.l + (p95 / X_MAX) * PW; }
+    function yOf(val, yMin, yMax) {
+      return M.t + ((yMax - val) / (yMax - yMin)) * PH;
+    }
+
+    function pareto(metric) {
+      const ranked = SERVERS.filter((s) => !s.prov).slice().sort((a, b) => a.p95 - b.p95);
+      const keep = [];
+      let best = -Infinity;
+      ranked.forEach((s) => {
+        if (s[metric] > best) {
+          keep.push(s);
+          best = s[metric];
+        }
+      });
+      return keep;
+    }
+
+    function fmtPct(n) {
+      return (Math.round(n * 10) / 10).toFixed(n % 1 ? 1 : 0) + "%";
+    }
+
+    function fmtSec(n) {
+      return n.toFixed(n < 10 ? 1 : 0) + " s";
+    }
+
+    function statusLabel(s) {
+      return s.status === "degraded" ? "Degraded" : "Operational";
+    }
+
+    const VIEWS = {
+      score: {
+        title: "Reliability Score vs P95 latency",
+        sub: "Redesign Score against 30-day P95 of successful residential probes. Ranked Pareto is Exa AI then Hugging Face.",
+        yKey: "score",
+        yMin: 70,
+        yMax: 102,
+        yTicks: [70, 80, 90, 100],
+        yTitle: "Reliability Score · Higher is better",
+        xHint: "P95 latency (seconds) · Lower is better",
+        readTitle: "Reliability Score",
+        readBody: "Reach 35% · tool success 30% · speed (P95 percentile) 20% · spec 15%. Same probe for every server. Ranked after 20 runs. AWS Knowledge and Semgrep stay provisional.",
+      },
+      tools: {
+        title: "Tool success vs P95 latency",
+        sub: "Share of safe tools/call that were accepted and looked like the job, against 30-day P95. Firecrawl is the gap in this set.",
+        yKey: "tool",
+        yMin: 45,
+        yMax: 104,
+        yTicks: [50, 60, 70, 80, 90, 100],
+        yTitle: "Tool success · Higher is better",
+        xHint: "P95 latency (seconds) · Lower is better",
+        readTitle: "Tool success",
+        readBody: "Invocation (accepted and well-formed) at 60% and answers that look right at 40%. Firecrawl reaches in 10s with 53.3% tool success because invocation lands on 22% of calls.",
+      },
+    };
+
+    function legendHtml() {
+      return (
+        '<span><i class="swatch swatch--quad"></i>Most attractive quadrant</span>' +
+        '<span><i class="swatch swatch--pareto"></i>Ranked Pareto line</span>' +
+        '<span><i class="swatch swatch--prov"></i>Provisional</span>' +
+        '<span><i class="swatch swatch--dev"></i>Dev Tools</span>' +
+        '<span><i class="swatch swatch--search"></i>Search</span>' +
+        '<span><i class="swatch swatch--pay"></i>Payments</span>' +
+        '<span><i class="swatch swatch--design"></i>Design</span>' +
+        '<span><i class="swatch swatch--data"></i>Data &amp; Storage</span>'
+      );
+    }
+
+    function labelPos(s, yKey, yMin, yMax) {
+      const x = xOf(s.p95);
+      const y = yOf(s[yKey], yMin, yMax);
+      const map = {
+        "AWS Knowledge": [8, -12],
+        Semgrep: [10, 4],
+        "Hugging Face": [10, -6],
+        "Exa AI": [-52, 14],
+        "Microsoft Learn": [10, -8],
+        Svelte: [10, 4],
+        Wise: [-36, 16],
+        Context7: [10, -2],
+        Tavily: [10, 4],
+        Prisma: [8, -12],
+        "Tailwind CSS": [8, 12],
+        Firecrawl: [-62, 4],
+        Redis: [8, 12],
+        "Next.js": [-48, 4],
+      };
+      const d = map[s.short] || [10, -6];
+      return { x: x + d[0], y: y + d[1] };
+    }
+
+    function renderScatter() {
+      const cfg = VIEWS[view];
+      const yKey = cfg.yKey;
+      const front = pareto(yKey);
+      const xTicks = [0, 10, 20, 30, 40];
+
+      const quadX = xOf(ATTR_P95);
+      const quadY = yOf(ATTR_SCORE, cfg.yMin, cfg.yMax);
+      const slowX = xOf(MEDIAN_P95);
+
+      let grid = "";
+      cfg.yTicks.forEach((t) => {
+        const y = yOf(t, cfg.yMin, cfg.yMax);
+        grid += '<line class="grid-line" x1="' + M.l + '" x2="' + (W - M.r) + '" y1="' + y + '" y2="' + y + '" />';
+        grid += '<text class="axis" text-anchor="end" x="' + (M.l - 8) + '" y="' + (y + 4) + '">' + t + "</text>";
+      });
+      xTicks.forEach((t) => {
+        const x = xOf(t);
+        grid += '<text class="axis" text-anchor="middle" x="' + x + '" y="' + (H - 18) + '">' + (t === 0 ? "0" : t + "s") + "</text>";
+      });
+
+      const paretoPts = front.map((s) => xOf(s.p95) + "," + yOf(s[yKey], cfg.yMin, cfg.yMax)).join(" ");
+
+      let dots = "";
+      SERVERS.forEach((s, i) => {
+        const x = xOf(s.p95);
+        const y = yOf(s[yKey], cfg.yMin, cfg.yMax);
+        const fill = CAT[s.cat].fill;
+        const cls = s.prov ? "dot dot--prov" : "dot";
+        const stroke = s.prov ? fill : "hsl(var(--card))";
+        dots +=
+          '<circle class="' +
+          cls +
+          '" data-i="' +
+          i +
+          '" cx="' +
+          x +
+          '" cy="' +
+          y +
+          '" r="7" fill="' +
+          (s.prov ? "hsl(var(--card))" : fill) +
+          '" stroke="' +
+          (s.prov ? fill : "hsl(var(--card))") +
+          '" />';
+        const lp = labelPos(s, yKey, cfg.yMin, cfg.yMax);
+        const lcls = s.alert ? "label label--alert" : s.prov ? "label label--muted" : "label";
+        dots +=
+          '<text class="' +
+          lcls +
+          '" x="' +
+          lp.x +
+          '" y="' +
+          lp.y +
+          '">' +
+          s.short +
+          (s.prov ? " (prov.)" : "") +
+          "</text>";
+      });
+
+      const callout =
+        view === "tools"
+          ? '<g class="callout">' +
+            '<rect x="' +
+            (xOf(10) - 210) +
+            '" y="' +
+            (yOf(53.3, cfg.yMin, cfg.yMax) - 58) +
+            '" width="200" height="50" rx="6" />' +
+            '<text class="callout-k" x="' +
+            (xOf(10) - 198) +
+            '" y="' +
+            (yOf(53.3, cfg.yMin, cfg.yMax) - 36) +
+            '">Firecrawl answers, then misses.</text>' +
+            '<text x="' +
+            (xOf(10) - 198) +
+            '" y="' +
+            (yOf(53.3, cfg.yMin, cfg.yMax) - 20) +
+            '">P95 10s · tool success 53.3% · invoke 22%.</text>' +
+            "</g>"
+          : view === "score"
+          ? '<g class="callout">' +
+            '<rect x="' +
+            (xOf(36) - 8) +
+            '" y="' +
+            (yOf(90, cfg.yMin, cfg.yMax) - 10) +
+            '" width="228" height="50" rx="6" />' +
+            '<text class="callout-k" x="' +
+            (xOf(36) + 6) +
+            '" y="' +
+            (yOf(90, cfg.yMin, cfg.yMax) + 10) +
+            '">GitMCP docs sit past 35s.</text>' +
+            '<text x="' +
+            (xOf(36) + 6) +
+            '" y="' +
+            (yOf(90, cfg.yMin, cfg.yMax) + 26) +
+            '">Prisma, Tailwind, Redis, Next.js still clear tools.</text>' +
+            "</g>"
+          : "";
+
+      return (
+        '<svg viewBox="0 0 ' +
+        W +
+        " " +
+        H +
+        '" role="img" aria-label="' +
+        cfg.title +
+        '">' +
+        '<rect class="quad" x="' +
+        M.l +
+        '" y="' +
+        M.t +
+        '" width="' +
+        (quadX - M.l) +
+        '" height="' +
+        (quadY - M.t) +
+        '" />' +
+        '<rect class="slow" x="' +
+        slowX +
+        '" y="' +
+        M.t +
+        '" width="' +
+        (W - M.r - slowX) +
+        '" height="' +
+        PH +
+        '" />' +
+        grid +
+        '<line class="median" x1="' +
+        slowX +
+        '" x2="' +
+        slowX +
+        '" y1="' +
+        M.t +
+        '" y2="' +
+        (H - M.b) +
+        '" />' +
+        '<polyline class="pareto" points="' +
+        paretoPts +
+        '" />' +
+        callout +
+        dots +
+        '<text class="axis-title" text-anchor="middle" transform="translate(16,' +
+        (M.t + PH / 2) +
+        ') rotate(-90)">' +
+        cfg.yTitle +
+        "</text>" +
+        '<text class="watermark" text-anchor="end" x="' +
+        (W - M.r) +
+        '" y="' +
+        (M.t + 14) +
+        '">AgentStatus</text>' +
+        "</svg>" +
+        '<div class="tooltip" id="tip"></div>'
+      );
+    }
+
+    function renderBars() {
+      const rows = SERVERS.slice().sort((a, b) => b.score - a.score);
+      const yMin = 50;
+      const yMax = 100;
+      const ticks = [50, 60, 70, 80, 90, 100];
+      let grid = "";
+      ticks.forEach((t) => {
+        const top = ((yMax - t) / (yMax - yMin)) * 100;
+        grid += '<div class="gline" style="top:' + top + '%"></div>';
+        grid += '<span class="ylab" style="top:' + top + '%">' + t + "</span>";
+      });
+      let cols = "";
+      let labs = "";
+      rows.forEach((s) => {
+        const h = ((s.score - yMin) / (yMax - yMin)) * 100;
+        const k = CAT[s.cat].key;
+        cols +=
+          '<div class="col"><div class="val">' +
+          s.score.toFixed(1) +
+          '</div><div class="bar bar--' +
+          k +
+          (s.prov ? " bar--prov" : "") +
+          '" style="height:' +
+          h +
+          '%" title="' +
+          s.name +
+          " · " +
+          s.score.toFixed(1) +
+          '"></div></div>';
+        labs +=
+          '<div class="x"><div class="mark mark--' +
+          k +
+          '">' +
+          s.mark +
+          '</div><div class="x__name">' +
+          s.short +
+          "</div></div>";
+      });
+      return (
+        '<div class="bars"><div class="grid">' +
+        grid +
+        '</div><div class="bar-row">' +
+        cols +
+        "</div></div>" +
+        '<div class="x-labels">' +
+        labs +
+        "</div>"
+      );
+    }
+
+    function renderRead(cfg) {
+      if (!cfg) {
+        return (
+          '<details open><summary>How to read this chart</summary><p>' +
+          "Bars are the redesign Reliability Score on 14 well-known servers with non-zero tool success. Hatched bars are provisional (under 20 runs). Color is category." +
+          "</p></details>" +
+          "<details><summary>Reliability Score</summary><p>" +
+          "Reach 35% · tool success 30% · speed 20% · spec 15%. Ranked after 20 runs so a few lucky probes cannot take #1." +
+          "</p></details>"
+        );
+      }
+      return (
+        "<details open><summary>How to read this chart</summary><p>" +
+        "Teal band is Score ≥ 90 and P95 ≤ 12s. Grey veil is slower than the Index median P95 (14.5s). Dotted line is the ranked Pareto frontier. Hollow dots are provisional." +
+        "</p></details>" +
+        "<details><summary>" +
+        cfg.readTitle +
+        "</summary><p>" +
+        cfg.readBody +
+        "</p></details>"
+      );
+    }
+
+    function bindTooltip() {
+      const svg = document.querySelector("#plot svg");
+      const tip = document.getElementById("tip");
+      if (!svg || !tip) return;
+      svg.querySelectorAll("circle[data-i]").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          const s = SERVERS[+el.getAttribute("data-i")];
+          tip.innerHTML =
+            "<strong>" +
+            s.name +
+            "</strong><div class='meta'>" +
+            s.homepage +
+            " · " +
+            CAT[s.cat].label +
+            " · " +
+            statusLabel(s) +
+            (s.prov ? " · provisional" : s.rank ? " · rank " + s.rank : "") +
+            "</div><div class='kv'><span>Score</span><span>" +
+            s.score.toFixed(1) +
+            "</span><span>Tool success</span><span>" +
+            fmtPct(s.tool) +
+            "</span><span>Reach 30d</span><span>" +
+            fmtPct(s.reach) +
+            "</span><span>P95 latency</span><span>" +
+            fmtSec(s.p95) +
+            "</span><span>Spec</span><span>" +
+            fmtPct(s.spec) +
+            "</span><span>Runs</span><span>" +
+            s.runs +
+            "</span></div>";
+          const wrap = document.getElementById("plot").getBoundingClientRect();
+          const c = el.getBoundingClientRect();
+          tip.style.left = Math.min(c.left - wrap.left + 14, wrap.width - 220) + "px";
+          tip.style.top = Math.max(8, c.top - wrap.top - 12) + "px";
+          tip.classList.add("is-on");
+        });
+        el.addEventListener("mouseleave", () => tip.classList.remove("is-on"));
+      });
+    }
+
+    function render() {
+      document.documentElement.setAttribute("data-view", view);
+      document.querySelectorAll("button[data-view]").forEach((b) =>
+        b.classList.toggle("is-on", b.getAttribute("data-view") === view)
+      );
+      const title = document.getElementById("chart-title");
+      const sub = document.getElementById("chart-sub");
+      const legend = document.getElementById("legend");
+      const plot = document.getElementById("plot");
+      const hint = document.getElementById("x-hint");
+      const read = document.getElementById("read");
+
+      if (view === "bars") {
+        title.textContent = "Reliability Score";
+        sub.textContent =
+          "Redesign Score on 14 well-known servers with non-zero tool success. Hatched bars have under 20 runs.";
+        legend.innerHTML =
+          '<span><i class="swatch swatch--prov"></i>Provisional</span>' +
+          '<span><i class="swatch swatch--dev"></i>Dev Tools</span>' +
+          '<span><i class="swatch swatch--search"></i>Search</span>' +
+          '<span><i class="swatch swatch--pay"></i>Payments</span>' +
+          '<span><i class="swatch swatch--design"></i>Design</span>' +
+          '<span><i class="swatch swatch--data"></i>Data &amp; Storage</span>';
+        plot.innerHTML = renderBars();
+        hint.textContent = "Reliability Score · Higher is better";
+        read.innerHTML = renderRead(null);
+        document.title = "MCP Index · Reliability Score";
+        return;
+      }
+
+      const cfg = VIEWS[view];
+      title.textContent = cfg.title;
+      sub.textContent = cfg.sub;
+      legend.innerHTML = legendHtml();
+      plot.innerHTML = renderScatter();
+      hint.textContent = cfg.xHint;
+      read.innerHTML = renderRead(cfg);
+      document.title = "MCP Index · " + cfg.title;
+      bindTooltip();
+    }
+
+    document.querySelectorAll("button[data-view]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        view = btn.getAttribute("data-view");
+        render();
+      });
+    });
+
+    render();
+  </script>
+  <script src="export-png.js"></script>
+</body>
+</html>

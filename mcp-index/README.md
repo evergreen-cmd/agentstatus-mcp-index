@@ -22,6 +22,7 @@ Teammates open the HTTPS link, toggle styles, and use **Download PNG**.
 | Firecrawl | [server-scorecard.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-scorecard.html) |
 | Comparison (W2) | [server-comparison.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-comparison.html) |
 | Cycle-12 bars | [cycle-12-time-to-first-result.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/cycle-12-time-to-first-result.html) |
+| Reliability frontier | [reliability-frontier.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/reliability-frontier.html) |
 
 Ready PNGs (when exported): `mcp-index/exports/`
 
