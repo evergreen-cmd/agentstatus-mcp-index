@@ -123,9 +123,9 @@ const JOBS = [
     wash: "light",
     style: "poster",
   },
-  { file: "reliability-frontier.html", slug: "reliability-score-vs-latency", view: "score" },
-  { file: "reliability-frontier.html", slug: "reliability-tool-success-vs-latency", view: "tools" },
-  { file: "reliability-frontier.html", slug: "reliability-score-ranking", view: "bars" },
+  { file: "reliability-frontier.html", slug: "reliability-score-vs-latency-light", wash: "light", style: "score" },
+  { file: "reliability-frontier.html", slug: "reliability-tool-success-vs-latency-light", wash: "light", style: "tools" },
+  { file: "reliability-frontier.html", slug: "reliability-score-ranking-light", wash: "light", style: "bars" },
 ];
 
 async function bakeWashes(browser) {
@@ -214,6 +214,10 @@ html[data-wash="light"] .wash__veil{background:linear-gradient(180deg,hsl(var(--
             document.querySelectorAll("[data-style-btn]").forEach((b) => {
               b.classList.toggle("is-on", b.dataset.styleBtn === style);
             });
+            if (["score", "tools", "bars"].includes(style) && typeof render === "function") {
+              view = style;
+              render();
+            }
           }
           if (viewName && typeof view !== "undefined" && typeof render === "function") {
             view = viewName;
