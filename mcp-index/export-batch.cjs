@@ -123,6 +123,9 @@ const JOBS = [
     wash: "light",
     style: "poster",
   },
+  { file: "reliability-frontier.html", slug: "reliability-score-vs-latency-light", wash: "light", style: "score" },
+  { file: "reliability-frontier.html", slug: "reliability-tool-success-vs-latency-light", wash: "light", style: "tools" },
+  { file: "reliability-frontier.html", slug: "reliability-score-ranking-light", wash: "light", style: "bars" },
 ];
 
 async function bakeWashes(browser) {
@@ -196,9 +199,9 @@ html[data-wash="light"] .wash__veil{background:linear-gradient(180deg,hsl(var(--
     await page.goto(url, { waitUntil: "networkidle0", timeout: 60000 });
     await page.evaluateHandle("document.fonts.ready");
 
-    if (job.wash || job.style) {
+    if (job.wash || job.style || job.view) {
       await page.evaluate(
-        ({ wash, style }) => {
+        ({ wash, style, viewName }) => {
           const root = document.documentElement;
           if (wash) {
             root.setAttribute("data-wash", wash);
@@ -211,9 +214,17 @@ html[data-wash="light"] .wash__veil{background:linear-gradient(180deg,hsl(var(--
             document.querySelectorAll("[data-style-btn]").forEach((b) => {
               b.classList.toggle("is-on", b.dataset.styleBtn === style);
             });
+            if (["score", "tools", "bars"].includes(style) && typeof render === "function") {
+              view = style;
+              render();
+            }
+          }
+          if (viewName && typeof view !== "undefined" && typeof render === "function") {
+            view = viewName;
+            render();
           }
         },
-        { wash: job.wash || null, style: job.style || null }
+        { wash: job.wash || null, style: job.style || null, viewName: job.view || null }
       );
     }
 

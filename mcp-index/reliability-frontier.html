@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" data-wash="light" data-style="score">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MCP Index · Reliability Score vs P95 latency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --surface-cream: 40 33% 97%;
+      --border: 214.3 31.8% 91.4%;
+      --radius: 0.5rem;
+      --logo-orange: 24.6 95% 53.1%;
+      --ok: 188 38% 38%;
+      --fail: 24.6 95% 53.1%;
+      --partial: 221.2 83.2% 53.3%;
+      --degraded: 30 12% 55%;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      min-height: 100vh;
+      padding: 1.25rem 1.25rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .chooser { max-width: 1040px; margin: 0 auto 1.1rem; }
+    .chooser h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.03em; }
+    .chooser p { margin-top: 0.25rem; font-size: 12px; line-height: 1.4; opacity: 0.7; max-width: 42rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; align-items: center; }
+    .row span { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.65; margin-right: 0.2rem; }
+    .row button {
+      font-family: inherit; font-size: 12px; font-weight: 700;
+      padding: 0.4rem 0.7rem; border-radius: var(--radius); border: 1px solid; cursor: pointer;
+    }
+    .nav-link { margin-top: 0.85rem; font-size: 12px; }
+    .nav-link a { font-weight: 700; text-decoration: none; }
+
+    .stage { max-width: 1040px; margin: 0 auto; }
+    .frame { position: relative; overflow: hidden; border-radius: calc(var(--radius) * 3); padding: 1.15rem; }
+    .wash { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .wash__base { position: absolute; inset: 0; }
+    .wash__img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      transform: scale(1.08) rotate(-2deg); opacity: 0.92;
+    }
+    .wash__veil { position: absolute; inset: 0; }
+    .sheet { position: relative; z-index: 1; border-radius: calc(var(--radius) * 2.5); padding: 1.45rem 1.5rem 1.25rem; }
+
+    html[data-wash="navy"] body { background: hsl(var(--brand-navy-deep)); color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .chooser h1 { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .row button { background: hsl(var(--brand-navy)); border-color: hsl(var(--ink-cream) / 0.2); color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .row button.is-on { background: hsl(var(--logo-orange)); border-color: hsl(var(--logo-orange)); color: hsl(var(--brand-navy-deep)); }
+    html[data-wash="navy"] .frame { border: 1px solid hsl(var(--brand-navy-deep)); background: hsl(var(--brand-navy-deep)); }
+    html[data-wash="navy"] .wash__base { background: hsl(var(--brand-navy)); }
+    html[data-wash="navy"] .wash__img { mix-blend-mode: soft-light; }
+    html[data-wash="navy"] .wash__img--2 { display: block; transform: scale(1.12) rotate(1.5deg); opacity: 0.45; mix-blend-mode: overlay; }
+    html[data-wash="navy"] .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--brand-navy) / 0.12) 0%, transparent 30%, transparent 55%, hsl(var(--brand-navy-deep) / 0.88) 100%),
+        linear-gradient(90deg, hsl(var(--brand-navy-deep) / 0.45) 0%, transparent 40%, transparent 70%, hsl(var(--brand-navy-deep) / 0.3) 100%);
+    }
+    html[data-wash="navy"] .sheet { background: transparent; border: none; color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .logo--light { display: none; }
+    html[data-wash="navy"] .logo--dark { display: block; }
+    html[data-wash="navy"] .nav-link a { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .footer a { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .tile,
+    html[data-wash="navy"] .plot-card { background: hsl(var(--brand-navy-deep) / 0.45); border-color: hsl(var(--ink-cream) / 0.14); }
+    html[data-wash="navy"] .callout-bg { fill: hsl(var(--brand-navy-deep) / 0.72); stroke: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .callout text { fill: hsl(var(--ink-cream) / 0.78); }
+    html[data-wash="navy"] .callout .callout-k { fill: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .top { border-color: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .footer { border-color: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .grid-line { stroke: hsl(var(--ink-cream) / 0.16); }
+    html[data-wash="navy"] .axis { fill: hsl(var(--ink-cream) / 0.7); }
+    html[data-wash="navy"] .axis-title,
+    html[data-wash="navy"] .label { fill: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .median { stroke: hsl(var(--ink-cream) / 0.45); }
+    html[data-wash="navy"] .pareto,
+    html[data-wash="navy"] .frontier-ring { stroke: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .slow { fill: hsl(var(--ink-cream) / 0.06); }
+    html[data-wash="navy"] .dot { stroke: hsl(var(--brand-navy)); }
+    html[data-wash="navy"] .hint { color: hsl(var(--ink-cream) / 0.7); }
+    html[data-wash="navy"] .ylab,
+    html[data-wash="navy"] .x__name,
+    html[data-wash="navy"] .val { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .bars { border-color: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .gline { border-color: hsl(var(--ink-cream) / 0.16); }
+    html[data-wash="navy"] .tooltip { background: hsl(var(--brand-navy)); border-color: hsl(var(--ink-cream) / 0.18); color: hsl(var(--ink-cream)); }
+
+    html[data-wash="light"] body { background: hsl(var(--surface-cream)); color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .row button { background: hsl(0 0% 100%); border-color: hsl(var(--border)); color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .row button.is-on { background: hsl(var(--brand-navy)); border-color: hsl(var(--brand-navy)); color: hsl(var(--ink-cream)); }
+    html[data-wash="light"] .frame { border: 1px solid hsl(var(--brand-navy) / 0.12); background: hsl(var(--surface-cream)); padding: 1.3rem; }
+    html[data-wash="light"] .wash__base { background: hsl(var(--surface-cream)); }
+    html[data-wash="light"] .wash__img { mix-blend-mode: multiply; opacity: 0.95; }
+    html[data-wash="light"] .wash__img--2 { display: none; }
+    html[data-wash="light"] .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--surface-cream) / 0.15) 0%, transparent 28%, transparent 62%, hsl(var(--surface-cream) / 0.55) 100%),
+        linear-gradient(90deg, hsl(var(--surface-cream) / 0.3) 0%, transparent 40%, transparent 70%, hsl(var(--surface-cream) / 0.2) 100%);
+    }
+    html[data-wash="light"] .sheet {
+      background: hsl(var(--surface-cream) / 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid hsl(var(--brand-navy) / 0.1);
+      box-shadow: 0 1px 0 hsl(0 0% 100% / 0.65) inset, 0 24px 48px -28px hsl(var(--brand-navy) / 0.28);
+      color: hsl(var(--brand-navy));
+    }
+    html[data-wash="light"] .logo--dark { display: none; }
+    html[data-wash="light"] .logo--light { display: block; }
+    html[data-wash="light"] .nav-link a,
+    html[data-wash="light"] .footer a { color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .tile,
+    html[data-wash="light"] .plot-card { background: hsl(0 0% 100% / 0.55); border-color: hsl(var(--brand-navy) / 0.1); }
+    html[data-wash="light"] .callout-bg { fill: hsl(0 0% 100% / 0.72); stroke: hsl(var(--brand-navy) / 0.1); }
+    html[data-wash="light"] .callout text { fill: hsl(var(--brand-navy) / 0.62); }
+    html[data-wash="light"] .callout .callout-k { fill: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .top { border-color: hsl(var(--brand-navy) / 0.12); }
+    html[data-wash="light"] .footer { border-color: hsl(var(--brand-navy) / 0.12); }
+    html[data-wash="light"] .grid-line { stroke: hsl(var(--brand-navy) / 0.1); }
+    html[data-wash="light"] .axis { fill: hsl(var(--brand-navy) / 0.55); }
+    html[data-wash="light"] .axis-title,
+    html[data-wash="light"] .label { fill: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .median { stroke: hsl(var(--brand-navy) / 0.35); }
+    html[data-wash="light"] .pareto,
+    html[data-wash="light"] .frontier-ring { stroke: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .slow { fill: hsl(var(--brand-navy) / 0.04); }
+    html[data-wash="light"] .dot { stroke: hsl(var(--surface-cream)); }
+    html[data-wash="light"] .tooltip { background: hsl(0 0% 100%); border-color: hsl(var(--brand-navy) / 0.12); color: hsl(var(--brand-navy)); }
+
+    .top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+      margin-bottom: 1rem; padding-bottom: 0.95rem; border-bottom: 1px solid;
+    }
+    .sheet > .top h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.15; }
+    .claim { margin-top: 0.4rem; font-size: 14px; font-weight: 600; line-height: 1.4; max-width: 38rem; }
+    .claim strong { color: hsl(var(--logo-orange)); font-weight: 700; }
+    .brand img { height: 32px; width: auto; display: block; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    @media (max-width: 720px) { .stats { grid-template-columns: 1fr 1fr; } }
+
+    .tile {
+      border: 1px solid;
+      border-radius: calc(var(--radius) * 1.25);
+      padding: 0.7rem 0.8rem 0.65rem;
+    }
+    .tile .k {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; opacity: 0.6;
+    }
+    .tile .v {
+      margin-top: 0.2rem; font-size: 26px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.1;
+    }
+    .tile .s { margin-top: 0.2rem; font-size: 11px; font-weight: 600; opacity: 0.62; line-height: 1.3; }
+
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 0.65rem 1rem;
+      font-size: 12px; font-weight: 600; margin-bottom: 0.7rem;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+    .swatch--ok { background: hsl(var(--ok)); }
+    .swatch--fail { background: hsl(var(--fail)); }
+    .swatch--prov { background: transparent; box-shadow: inset 0 0 0 2px hsl(var(--ok)); }
+    .swatch--quad { background: hsl(var(--ok) / 0.22); border: 1px solid hsl(var(--ok) / 0.35); border-radius: 2px; }
+    .swatch--pareto { width: 16px; height: 0; border-radius: 0; background: none; border-top: 2px dotted currentColor; }
+    .swatch--median { width: 16px; height: 0; border-radius: 0; background: none; border-top: 1.5px solid currentColor; opacity: 0.45; }
+
+    .plot-card {
+      border: 1px solid;
+      border-radius: calc(var(--radius) * 1.5);
+      padding: 0.75rem 0.7rem 0.55rem;
+    }
+    .plot-wrap { position: relative; }
+    .plot-wrap svg { display: block; width: 100%; height: auto; }
+
+    .quad { fill: hsl(var(--ok) / 0.14); }
+    .pareto { fill: none; stroke-width: 2.4; stroke-dasharray: 1.5 5; stroke-linecap: round; stroke-linejoin: round; }
+    .frontier-ring { fill: none; stroke-width: 1.5; pointer-events: none; }
+    .median { stroke-width: 1.25; }
+    .dot { stroke-width: 2; cursor: pointer; }
+    .dot--ok { fill: hsl(var(--ok)); }
+    .dot--fail { fill: hsl(var(--fail)); }
+    .dot--prov { fill: transparent; stroke: hsl(var(--ok)); stroke-width: 2.4; }
+    .label { font-size: 11px; font-weight: 650; pointer-events: none; }
+    .label--alert { fill: hsl(var(--fail)); font-weight: 700; }
+    .axis { font-size: 11px; font-weight: 600; }
+    .axis-title { font-size: 12px; font-weight: 700; }
+    .callout { pointer-events: none; }
+    .callout-bg { fill: hsl(0 0% 100% / 0.72); stroke: hsl(var(--brand-navy) / 0.1); }
+    .callout text { font-size: 11px; fill: hsl(var(--brand-navy) / 0.62); }
+    .callout .callout-k { font-weight: 700; fill: hsl(var(--brand-navy)); }
+
+    .hint {
+      text-align: center; font-size: 12px; font-weight: 600; opacity: 0.65; margin-top: 0.35rem;
+    }
+
+    .tooltip {
+      position: absolute; z-index: 5; min-width: 200px; max-width: 260px;
+      padding: 0.55rem 0.7rem 0.6rem; border: 1px solid; border-radius: var(--radius);
+      font-size: 12px; line-height: 1.4; pointer-events: none; opacity: 0;
+    }
+    .tooltip.is-on { opacity: 1; }
+    .tooltip strong { display: block; font-size: 13px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.12rem; }
+    .tooltip .meta { opacity: 0.65; font-weight: 500; margin-bottom: 0.35rem; }
+    .tooltip .kv { display: grid; grid-template-columns: 1fr auto; gap: 0.12rem 0.7rem; font-variant-numeric: tabular-nums; }
+    .tooltip .kv span:nth-child(odd) { opacity: 0.65; }
+    .tooltip .kv span:nth-child(even) { font-weight: 700; }
+
+    .bars {
+      position: relative; height: 340px; margin: 0.15rem 0 0.1rem;
+      border-bottom: 1px solid hsl(var(--brand-navy) / 0.12);
+    }
+    .bars .grid { position: absolute; inset: 0 0 0 2.3rem; pointer-events: none; }
+    .bars .gline { position: absolute; left: 0; right: 0; border-top: 1px solid hsl(var(--brand-navy) / 0.1); }
+    .bars .ylab {
+      position: absolute; left: 0; width: 2.05rem; transform: translateY(-50%);
+      font-size: 11px; font-weight: 600; opacity: 0.6; text-align: right;
+    }
+    .bar-row {
+      position: absolute; left: 2.3rem; right: 0; top: 0; bottom: 0;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 0.35rem; padding: 0 0.15rem;
+    }
+    .col { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .val { font-size: 11px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.25rem; white-space: nowrap; }
+    .bar { width: 58%; max-width: 38px; border-radius: 4px 4px 2px 2px; min-height: 4px; position: relative; overflow: hidden; }
+    .bar--ok { background: hsl(var(--ok)); }
+    .bar--fail { background: hsl(var(--fail)); }
+    .bar--prov {
+      background: hsl(var(--ok));
+    }
+    .bar--prov::after {
+      content: ""; position: absolute; inset: 0;
+      background: repeating-linear-gradient(-45deg, hsl(var(--ink-cream) / 0.45) 0 3px, transparent 3px 7px);
+    }
+    .x-labels {
+      display: flex; justify-content: space-between; gap: 0.35rem;
+      padding: 2.2rem 0.15rem 0 2.3rem; min-height: 6.2rem;
+    }
+    .x { flex: 1; min-width: 0; text-align: center; font-size: 11px; line-height: 1.25; }
+    .mark {
+      width: 28px; height: 28px; margin: 0 auto 0.35rem;
+      display: grid; place-items: center;
+      background: transparent;
+    }
+    .mark img {
+      width: 28px; height: 28px;
+      object-fit: contain;
+      display: block;
+    }
+    html[data-wash="navy"] .mark img[src$="prisma.png"],
+    html[data-wash="navy"] .mark img[src$="tavily.png"],
+    html[data-wash="navy"] .mark img[src$="nextjs.png"] {
+      filter: invert(1);
+    }
+    .x__name {
+      font-weight: 700; transform: rotate(-48deg); transform-origin: 50% 0;
+      white-space: nowrap; display: inline-block;
+    }
+
+    .footer {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.65rem;
+      margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid;
+      font-size: 12px; opacity: 0.72; line-height: 1.4;
+    }
+    .footer a { font-weight: 700; text-decoration: none; opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="chooser">
+    <h1>MCP Reliability Index · well-known sample</h1>
+    <p>14 servers from the 11 Sep 2026, 15:07 UTC feed. Zero-success and login-gated rows left out. Light wash matches the scorecard cards.</p>
+    <div class="row" role="group" aria-label="Wash">
+      <span>Wash</span>
+      <button type="button" data-wash-btn="navy">Navy</button>
+      <button type="button" class="is-on" data-wash-btn="light">Light (Abstract)</button>
+    </div>
+    <div class="row" role="group" aria-label="Style">
+      <span>Style</span>
+      <button type="button" class="is-on" data-style-btn="score">Score × latency</button>
+      <button type="button" data-style-btn="tools">Tool success × latency</button>
+      <button type="button" data-style-btn="bars">Score ranking</button>
+    </div>
+    <p class="nav-link"><a href="index.html">← Share cards</a> · <a href="semgrep-scorecard.html">Semgrep scorecard →</a></p>
+  </div>
+
+  <div class="stage">
+    <div class="frame">
+      <div class="wash" aria-hidden="true">
+        <div class="wash__base"></div>
+        <img class="wash__img" src="hero-wash-site.jpg" alt="" />
+        <img class="wash__img wash__img--2" src="hero-wash-site.jpg" alt="" />
+        <div class="wash__veil"></div>
+      </div>
+
+      <article class="sheet">
+        <header class="top">
+          <div>
+            <h1>MCP Reliability Index</h1>
+            <p class="claim" id="claim"></p>
+          </div>
+          <div class="brand">
+            <img class="logo--dark" src="agentstatus-wordmark-white.svg" alt="AgentStatus" />
+            <img class="logo--light" src="agentstatus-wordmark.svg" alt="AgentStatus" />
+          </div>
+        </header>
+
+        <div class="stats">
+          <div class="tile">
+            <div class="k">Sample</div>
+            <div class="v">14</div>
+            <div class="s">of 33 well-known</div>
+          </div>
+          <div class="tile">
+            <div class="k">Median P95</div>
+            <div class="v">11.5s</div>
+            <div class="s">This set · lower is better</div>
+          </div>
+          <div class="tile">
+            <div class="k">Ranked Pareto</div>
+            <div class="v">2</div>
+            <div class="s">Exa AI then Hugging Face</div>
+          </div>
+          <div class="tile">
+            <div class="k">Tool gap</div>
+            <div class="v">53.3%</div>
+            <div class="s">Firecrawl · invoke 22%</div>
+          </div>
+        </div>
+
+        <div class="legend" id="legend"></div>
+        <div class="plot-card">
+          <div class="plot-wrap" id="plot"></div>
+          <p class="hint" id="x-hint"></p>
+        </div>
+
+        <footer class="footer">
+          <p>mcp-index feed · 11 Sep 2026, 15:07 UTC. Independent residential probes.</p>
+          <p><a href="https://agentstatus.dev/mcp-index">agentstatus.dev</a></p>
+        </footer>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    const SERVERS = [
+      { name: "AWS Knowledge", short: "AWS Knowledge", logo: "logos/aws.png", score: 99.7, tool: 100, reach: 100, spec: 100, p95: 4.0, runs: 13, rank: null, status: "operational", prov: true, homepage: "aws.amazon.com" },
+      { name: "Semgrep", short: "Semgrep", logo: "logos/semgrep.png", score: 98.9, tool: 100, reach: 100, spec: 100, p95: 5.8, runs: 2, rank: null, status: "operational", prov: true, homepage: "semgrep.dev" },
+      { name: "Hugging Face", short: "Hugging Face", logo: "logos/huggingface.png", score: 95.0, tool: 100, reach: 95.2, spec: 96.7, p95: 7.8, runs: 42, rank: 184, status: "degraded", prov: false, homepage: "huggingface.co" },
+      { name: "Exa AI", short: "Exa AI", logo: "logos/exa.png", score: 92.9, tool: 98.4, reach: 90.5, spec: 90.0, p95: 6.8, runs: 21, rank: 374, status: "operational", prov: false, homepage: "exa.ai" },
+      { name: "Microsoft Learn", short: "MS Learn", logo: "logos/microsoft.png", score: 92.8, tool: 97.9, reach: 100, spec: 100, p95: 11, runs: 59, rank: 376, status: "operational", prov: false, homepage: "learn.microsoft.com" },
+      { name: "Svelte", short: "Svelte", logo: "logos/svelte.png", score: 91.3, tool: 100, reach: 98.0, spec: 98.0, p95: 12, runs: 51, rank: 489, status: "operational", prov: false, homepage: "svelte.dev" },
+      { name: "Wise", short: "Wise", logo: "logos/wise.png", score: 91.0, tool: 94.0, reach: 100, spec: 94.5, p95: 11, runs: 50, rank: 513, status: "degraded", prov: false, homepage: "wise.com" },
+      { name: "Context7", short: "Context7", logo: "logos/context7.png", score: 87.5, tool: 94.9, reach: 97.9, spec: 98.6, p95: 15, runs: 48, rank: 821, status: "operational", prov: false, homepage: "context7.com" },
+      { name: "Tavily", short: "Tavily", logo: "logos/tavily.png", score: 83.5, tool: 86.4, reach: 100, spec: 95.6, p95: 17, runs: 42, rank: 1219, status: "degraded", prov: false, homepage: "tavily.com" },
+      { name: "Prisma (GitMCP)", short: "Prisma", logo: "logos/prisma.png", score: 81.2, tool: 98.9, reach: 100, spec: 99.6, p95: 36, runs: 48, rank: 1436, status: "operational", prov: false, homepage: "prisma.io" },
+      { name: "Tailwind CSS (GitMCP)", short: "Tailwind CSS", logo: "logos/tailwindcss.png", score: 80.6, tool: 100, reach: 98.1, spec: 98.1, p95: 37, runs: 53, rank: 1504, status: "operational", prov: false, homepage: "tailwindcss.com" },
+      { name: "Firecrawl", short: "Firecrawl", logo: "logos/firecrawl.png", score: 78.1, tool: 53.3, reach: 100, spec: 84.3, p95: 10, runs: 36, rank: 1725, status: "degraded", prov: false, homepage: "firecrawl.dev", alert: true },
+      { name: "Redis (GitMCP)", short: "Redis", logo: "logos/redis.png", score: 77.9, tool: 97.1, reach: 95.1, spec: 93.8, p95: 38, runs: 61, rank: 1732, status: "operational", prov: false, homepage: "redis.io" },
+      { name: "Next.js (GitMCP)", short: "Next.js", logo: "logos/nextjs.png", score: 77.4, tool: 93.4, reach: 96.6, spec: 96.4, p95: 43, runs: 59, rank: 1775, status: "operational", prov: false, homepage: "nextjs.org" },
+    ];
+
+    const W = 980;
+    const H = 500;
+    const M = { l: 70, r: 28, t: 26, b: 48 };
+    const PW = W - M.l - M.r;
+    const PH = H - M.t - M.b;
+    const X_MAX = 48;
+    const MEDIAN_P95 = 14.5;
+    const ATTR_SCORE = 90;
+    const ATTR_P95 = 12;
+
+    const CLAIMS = {
+      score: "Exa AI and Hugging Face set the ranked Pareto on <strong>11 Sep 2026</strong>. AWS Knowledge leads on 13 runs, so that Score stays provisional.",
+      tools: "Firecrawl answers in 10s with <strong>53.3%</strong> tool success on <strong>11 Sep 2026</strong>. Invocation landed on 22% of calls.",
+      bars: "AWS Knowledge scores <strong>99.7</strong> on 13 runs. Ranked well-known servers in this set sit from Hugging Face <strong>95.0</strong> to Next.js <strong>77.4</strong>.",
+    };
+
+    const VIEWS = {
+      score: {
+        yKey: "score", yMin: 70, yMax: 102, yTicks: [70, 80, 90, 100],
+        yTitle: "Reliability Score · Higher is better",
+        xHint: "P95 latency (seconds) · Lower is better",
+      },
+      tools: {
+        yKey: "tool", yMin: 45, yMax: 104, yTicks: [50, 60, 70, 80, 90, 100],
+        yTitle: "Tool success · Higher is better",
+        xHint: "P95 latency (seconds) · Lower is better",
+      },
+    };
+
+    const LABEL_SCORE = {
+      "AWS Knowledge": [10, -14], Semgrep: [10, 16], "Hugging Face": [11, -10],
+      "Exa AI": [-54, 16], "MS Learn": [12, -16], Svelte: [12, 16], Wise: [-38, 18],
+      Context7: [10, -8], Tavily: [10, 14], Prisma: [10, -14], "Tailwind CSS": [10, 16],
+      Firecrawl: [12, 16], Redis: [-46, 16], "Next.js": [10, 16],
+    };
+    const LABEL_TOOLS = {
+      "Hugging Face": [12, -16], "Exa AI": [-54, 16], "MS Learn": [12, 20],
+      Svelte: [12, -16], Wise: [-36, 18], Context7: [10, 16], Tavily: [10, 14],
+      Prisma: [10, -14], "Tailwind CSS": [10, 16], Firecrawl: [12, 18],
+      Redis: [10, 16], "Next.js": [-52, 16],
+    };
+
+    const root = document.documentElement;
+    let view = root.getAttribute("data-style") || "score";
+    const params = new URLSearchParams(location.search);
+    if (["score", "tools", "bars"].includes(params.get("view"))) view = params.get("view");
+    if (["score", "tools", "bars"].includes(params.get("style"))) view = params.get("style");
+    if (params.get("wash") === "navy" || params.get("wash") === "light") {
+      root.setAttribute("data-wash", params.get("wash"));
+      document.querySelectorAll("[data-wash-btn]").forEach((b) =>
+        b.classList.toggle("is-on", b.dataset.washBtn === params.get("wash"))
+      );
+    }
+
+    function xOf(p95) { return M.l + (p95 / X_MAX) * PW; }
+    function yOf(val, yMin, yMax) { return M.t + ((yMax - val) / (yMax - yMin)) * PH; }
+    function tone(s) { return s.prov ? "prov" : s.status === "degraded" ? "fail" : "ok"; }
+    function pareto(metric) {
+      const ranked = SERVERS.filter((s) => !s.prov).slice().sort((a, b) => a.p95 - b.p95);
+      const keep = [];
+      let best = -Infinity;
+      ranked.forEach((s) => {
+        if (s[metric] > best) { keep.push(s); best = s[metric]; }
+      });
+      return keep;
+    }
+    function fmtPct(n) { return (Math.round(n * 10) / 10).toFixed(n % 1 ? 1 : 0) + "%"; }
+    function fmtSec(n) { return n.toFixed(n < 10 ? 1 : 0) + " s"; }
+    function labelPos(s, yKey, yMin, yMax) {
+      const map = yKey === "tool" ? LABEL_TOOLS : LABEL_SCORE;
+      const d = map[s.short] || [10, -6];
+      return { x: xOf(s.p95) + d[0], y: yOf(s[yKey], yMin, yMax) + d[1] };
+    }
+
+    function legendHtml() {
+      if (view === "bars") {
+        return '<span><i class="swatch swatch--ok"></i>Operational</span>' +
+          '<span><i class="swatch swatch--fail"></i>Degraded</span>' +
+          '<span><i class="swatch swatch--prov"></i>Provisional</span>';
+      }
+      return '<span><i class="swatch swatch--quad"></i>Most attractive quadrant</span>' +
+        '<span><i class="swatch swatch--pareto"></i>Ranked Pareto</span>' +
+        '<span><i class="swatch swatch--median"></i>Index median P95</span>' +
+        '<span><i class="swatch swatch--ok"></i>Operational</span>' +
+        '<span><i class="swatch swatch--fail"></i>Degraded</span>' +
+        '<span><i class="swatch swatch--prov"></i>Provisional</span>';
+    }
+
+    function renderScatter() {
+      const cfg = VIEWS[view];
+      const yKey = cfg.yKey;
+      const front = pareto(yKey);
+      const quadX = xOf(ATTR_P95);
+      const quadY = yOf(ATTR_SCORE, cfg.yMin, cfg.yMax);
+      const slowX = xOf(MEDIAN_P95);
+      let grid = "";
+      cfg.yTicks.forEach((t) => {
+        const y = yOf(t, cfg.yMin, cfg.yMax);
+        grid += '<line class="grid-line" x1="' + M.l + '" x2="' + (W - M.r) + '" y1="' + y + '" y2="' + y + '" />';
+        grid += '<text class="axis" text-anchor="end" x="' + (M.l - 8) + '" y="' + (y + 4) + '">' + t + "</text>";
+      });
+      [0, 10, 20, 30, 40].forEach((t) => {
+        grid += '<text class="axis" text-anchor="middle" x="' + xOf(t) + '" y="' + (H - 16) + '">' + (t === 0 ? "0" : t + "s") + "</text>";
+      });
+      const paretoPts = front.map((s) => xOf(s.p95) + "," + yOf(s[yKey], cfg.yMin, cfg.yMax)).join(" ");
+      let rings = "";
+      front.forEach((s) => {
+        rings += '<circle class="frontier-ring" cx="' + xOf(s.p95) + '" cy="' + yOf(s[yKey], cfg.yMin, cfg.yMax) + '" r="11" />';
+      });
+      let dots = "";
+      SERVERS.forEach((s, i) => {
+        const x = xOf(s.p95);
+        const y = yOf(s[yKey], cfg.yMin, cfg.yMax);
+        const t = tone(s);
+        dots += '<circle class="dot dot--' + t + '" data-i="' + i + '" cx="' + x + '" cy="' + y + '" r="7" />';
+        if (!(view === "tools" && s.prov)) {
+          const lp = labelPos(s, yKey, cfg.yMin, cfg.yMax);
+          dots += '<text class="label' + (s.alert ? " label--alert" : "") + '" x="' + lp.x + '" y="' + lp.y + '">' + s.short + (s.prov ? " (prov.)" : "") + "</text>";
+        }
+      });
+      const callout = view === "tools"
+        ? '<g class="callout"><rect class="callout-bg" x="' + xOf(0.8) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) - 8) + '" width="236" height="50" rx="8" /><text class="callout-k" x="' + (xOf(0.8) + 12) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) + 12) + '">Firecrawl answers, then misses.</text><text x="' + (xOf(0.8) + 12) + '" y="' + (yOf(66, cfg.yMin, cfg.yMax) + 28) + '">P95 10s · tool success 53.3% · invoke 22%.</text></g>'
+        : '<g class="callout"><rect class="callout-bg" x="' + xOf(20) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) - 8) + '" width="236" height="50" rx="8" /><text class="callout-k" x="' + (xOf(20) + 12) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) + 12) + '">GitMCP docs sit past 35s.</text><text x="' + (xOf(20) + 12) + '" y="' + (yOf(94, cfg.yMin, cfg.yMax) + 28) + '">Prisma, Tailwind, Redis, Next.js still clear tools.</text></g>';
+      return '<svg viewBox="0 0 ' + W + " " + H + '" role="img">' +
+        '<rect class="quad" x="' + M.l + '" y="' + M.t + '" width="' + (quadX - M.l) + '" height="' + (quadY - M.t) + '" />' +
+        '<rect class="slow" x="' + slowX + '" y="' + M.t + '" width="' + (W - M.r - slowX) + '" height="' + PH + '" />' +
+        grid +
+        '<line class="median" x1="' + slowX + '" x2="' + slowX + '" y1="' + M.t + '" y2="' + (H - M.b) + '" />' +
+        '<text class="axis" x="' + (slowX + 6) + '" y="' + (M.t + 14) + '">Index median 14.5s</text>' +
+        '<polyline class="pareto" points="' + paretoPts + '" />' +
+        callout + rings + dots +
+        '<text class="axis-title" text-anchor="middle" transform="translate(16,' + (M.t + PH / 2) + ') rotate(-90)">' + cfg.yTitle + "</text>" +
+        '</svg><div class="tooltip" id="tip"></div>';
+    }
+
+    function renderBars() {
+      const rows = SERVERS.slice().sort((a, b) => b.score - a.score);
+      const yMin = 50;
+      const yMax = 104;
+      let grid = "";
+      [50, 60, 70, 80, 90, 100].forEach((t) => {
+        const top = ((yMax - t) / (yMax - yMin)) * 100;
+        grid += '<div class="gline" style="top:' + top + '%"></div><span class="ylab" style="top:' + top + '%">' + t + "</span>";
+      });
+      let cols = "";
+      let labs = "";
+      rows.forEach((s) => {
+        const h = ((s.score - yMin) / (yMax - yMin)) * 100;
+        const t = tone(s);
+        cols += '<div class="col"><div class="val">' + s.score.toFixed(1) + '</div><div class="bar bar--' + t + '" style="height:' + h + '%" title="' + s.name + " · " + s.score.toFixed(1) + '"></div></div>';
+        labs += '<div class="x"><div class="mark"><img src="' + s.logo + '" alt="' + s.short + '" /></div><div class="x__name">' + s.short + "</div></div>";
+      });
+      return '<div class="bars"><div class="grid">' + grid + '</div><div class="bar-row">' + cols + "</div></div><div class=\"x-labels\">" + labs + "</div>";
+    }
+
+    function bindTooltip() {
+      const svg = document.querySelector("#plot svg");
+      const tip = document.getElementById("tip");
+      if (!svg || !tip) return;
+      svg.querySelectorAll("circle[data-i]").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          const s = SERVERS[+el.getAttribute("data-i")];
+          tip.innerHTML =
+            "<strong>" + s.name + "</strong><div class='meta'>" + s.homepage + " · " +
+            (s.prov ? "provisional" : s.status === "degraded" ? "Degraded" : "Operational") +
+            (s.rank ? " · rank " + s.rank : "") + "</div><div class='kv'><span>Score</span><span>" +
+            s.score.toFixed(1) + "</span><span>Tool success</span><span>" + fmtPct(s.tool) +
+            "</span><span>Reach 30d</span><span>" + fmtPct(s.reach) + "</span><span>P95 latency</span><span>" +
+            fmtSec(s.p95) + "</span><span>Spec</span><span>" + fmtPct(s.spec) +
+            "</span><span>Runs</span><span>" + s.runs + "</span></div>";
+          const wrap = document.getElementById("plot").getBoundingClientRect();
+          const c = el.getBoundingClientRect();
+          tip.style.left = Math.min(c.left - wrap.left + 14, wrap.width - 220) + "px";
+          tip.style.top = Math.max(8, c.top - wrap.top - 12) + "px";
+          tip.classList.add("is-on");
+        });
+        el.addEventListener("mouseleave", () => tip.classList.remove("is-on"));
+      });
+    }
+
+    function render() {
+      root.setAttribute("data-style", view);
+      document.querySelectorAll("[data-style-btn]").forEach((b) => b.classList.toggle("is-on", b.dataset.styleBtn === view));
+      document.getElementById("claim").innerHTML = CLAIMS[view];
+      document.getElementById("legend").innerHTML = legendHtml();
+      const plot = document.getElementById("plot");
+      const hint = document.getElementById("x-hint");
+      if (view === "bars") {
+        plot.innerHTML = renderBars();
+        hint.textContent = "Reliability Score · Higher is better";
+        document.title = "MCP Index · Reliability Score";
+        return;
+      }
+      const cfg = VIEWS[view];
+      plot.innerHTML = renderScatter();
+      hint.textContent = cfg.xHint;
+      document.title = "MCP Index · " + (view === "tools" ? "Tool success vs P95 latency" : "Reliability Score vs P95 latency");
+      bindTooltip();
+    }
+
+    document.querySelectorAll("[data-wash-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.setAttribute("data-wash", btn.dataset.washBtn);
+        document.querySelectorAll("[data-wash-btn]").forEach((b) => b.classList.toggle("is-on", b === btn));
+      });
+    });
+    document.querySelectorAll("[data-style-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        view = btn.dataset.styleBtn;
+        render();
+      });
+    });
+    render();
+  </script>
+  <script src="export-png.js"></script>
+</body>
+</html>
