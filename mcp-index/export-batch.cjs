@@ -13,6 +13,7 @@ const OUT = path.join(ROOT, "exports");
 
 const JOBS = [
   { file: "cycle-12-time-to-first-result.html", slug: "cycle-12-time-to-first-result-navy", wash: "navy" },
+  { file: "agentmail-time-to-first-result.html", slug: "agentmail-time-to-first-result-navy", wash: "navy" },
   {
     file: "server-scorecard.html",
     slug: "server-scorecard-matrix-navy",

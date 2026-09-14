@@ -3,6 +3,9 @@ AgentStatus MCP Index — share PNGs
 Captured with Chrome (matches on-screen navy/light wash).
 Re-export: node export-batch.cjs
 
+AgentMail time to first result (navy, 8–14 Sep 2026):
+  agentmail-time-to-first-result-navy.png
+
 AgentMail (14 Sep 2026, light):
   agentmail-infographic-catalog-light.png
   agentmail-infographic-connection-light.png
