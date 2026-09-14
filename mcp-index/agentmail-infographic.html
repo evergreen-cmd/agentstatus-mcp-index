@@ -347,7 +347,7 @@
         </section>
 
         <footer class="footer rule">
-          <p id="foot-note">Independent residential run. Host compatibility is a separate scorecard.</p>
+          <p id="foot-note">Independent residential run. Create an account to see the full log and what to fix.</p>
           <p><a href="https://agentstatus.dev">agentstatus.dev</a></p>
         </footer>
       </article>
@@ -407,14 +407,7 @@
       hosts: 'Cleared <strong>tools/call</strong> end to end in <strong>18 of 18</strong> hosts on <strong>14 Sep 2026</strong>. 31 tools listed, 1 of 1 answered.',
       poster: 'Cleared <strong>tools/call</strong> in <strong>18 of 18</strong> hosts on <strong>14 Sep 2026</strong>.',
     };
-    const foots = {
-      catalog: "Independent residential run. Host compatibility is a separate scorecard.",
-      connection: "Independent residential run. Host compatibility is a separate scorecard.",
-      history: "Independent residential run. Host compatibility is a separate scorecard.",
-      multistep: "None of the unfinished steps were caused by AgentMail's server.",
-      hosts: "18 of 18 clients. Each listed 31 tools and answered 1 of 1 call.",
-      poster: "Independent residential run plus host compatibility. agentstatus.dev",
-    };
+    const FOOT = "Independent residential run. Create an account to see the full log and what to fix.";
 
     const catalog = document.getElementById("catalog");
     const posterHosts = document.getElementById("poster-hosts");
@@ -497,7 +490,7 @@
     function sync() {
       const style = root.getAttribute("data-style");
       claim.innerHTML = claims[style] || claims.catalog;
-      foot.textContent = foots[style] || foots.catalog;
+      foot.textContent = FOOT;
     }
     sync();
 
