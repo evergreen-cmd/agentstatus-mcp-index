@@ -18,3 +18,11 @@ Semgrep (14 Sep 2026, light):
   semgrep-infographic-invokes-light.png
   semgrep-infographic-hosts-light.png
   semgrep-infographic-poster-light.png
+
+Attio (13-14 Sep 2026, light):
+  attio-infographic-catalog-light.png
+  attio-infographic-connection-light.png
+  attio-infographic-history-light.png
+  attio-infographic-multistep-light.png
+  attio-infographic-hosts-light.png
+  attio-infographic-poster-light.png
