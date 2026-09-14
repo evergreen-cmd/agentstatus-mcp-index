@@ -348,8 +348,8 @@
 
         <section class="panel" id="panel-poster">
           <div class="poster">
-            <p class="poster__stat"><span>0</span> / 18</p>
-            <p class="poster__line">hosts completed a tool invoke on 13 Sep 2026. ChatGPT and Claude stopped at Auth. Sixteen listed 40 tools and did not reach a call.</p>
+            <p class="poster__stat"><span>16</span> / 18</p>
+            <p class="poster__line">hosts reached on 13 Sep 2026. ChatGPT and Claude stopped at Auth. They cannot send Authorization.</p>
             <div class="poster__hosts" id="poster-hosts"></div>
           </div>
         </section>
@@ -364,7 +364,7 @@
 
   <div class="outreach">
     <strong>Outreach first line (copy)</strong>
-    Attio's MCP completed a tool invoke from a residential node on 14 Sep 2026 (median 4.50s, 9 of 10 runs). ChatGPT and Claude stopped at Auth. Sixteen other hosts listed 40 tools and did not reach a call. Here's the run: agentstatus.dev.
+    Attio's MCP reached 16 of 18 hosts on 13 Sep 2026, but ChatGPT and Claude never connected. Residential median 4.50s, 9 of 10 runs. Here's the run: agentstatus.dev.
   </div>
 
   <script>
@@ -423,22 +423,22 @@
     const hosts = [
       { name: "ChatGPT", status: "fail", note: "Can't send Authorization", label: "Stopped at Auth" },
       { name: "Claude", status: "fail", note: "Can't send Authorization", label: "Stopped at Auth" },
-      { name: "AWS AgentCore", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Claude Code", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Cline", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Codex", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Copilot", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Copilot CLI", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Cursor", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Cursor CLI", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Goose", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Mistral", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "n8n", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Notion", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Perplexity", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Slackbot", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "VS Code", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
-      { name: "Windsurf", status: "partial", note: "40 tools · Not reached", label: "Not reached" },
+      { name: "AWS AgentCore", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Claude Code", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Cline", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Codex", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Copilot", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Copilot CLI", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Cursor", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Cursor CLI", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Goose", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Mistral", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "n8n", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Notion", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Perplexity", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Slackbot", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "VS Code", status: "ok", note: "Sends a key · Started", label: "Reached" },
+      { name: "Windsurf", status: "ok", note: "Sends a key · Started", label: "Reached" },
     ];
     const labels = { ok: "Called", listed: "Listed only" };
     const claims = {
@@ -446,8 +446,8 @@
       connection: "<strong>9 of 10</strong> runs passed. Median run <strong>4.50s</strong>. Last failure <strong>10 Sep 2026</strong>.",
       history: "<strong>23 of 40</strong> advertised tools have call history. Seven reported an error in this window.",
       multistep: "<strong>2 of 2</strong> calls passed. <strong>2 of 6</strong> tools ran. Later id steps were not confirmed.",
-      hosts: "<strong>ChatGPT</strong> and <strong>Claude</strong> stopped at Auth. <strong>16 of 18</strong> hosts listed 40 tools and did not reach a call.",
-      poster: "Attio's MCP completed a tool invoke on <strong>0 of 18</strong> hosts on <strong>13 Sep 2026</strong>.",
+      hosts: "<strong>ChatGPT</strong> and <strong>Claude</strong> stopped at Auth. <strong>16 of 18</strong> hosts reached, sent a key, and started.",
+      poster: "Attio's MCP reached <strong>16 of 18</strong> hosts on <strong>13 Sep 2026</strong>.",
     };
     const FOOT = "Independent residential run. Create an account to see the full log and what to fix.";
 
