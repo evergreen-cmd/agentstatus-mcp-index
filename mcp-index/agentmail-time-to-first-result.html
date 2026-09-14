@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1400, height=900" />
+  <title>MCP Index · AgentMail · Time to first result</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --radius: 0.5rem;
+      --logo-orange: 24.6 95% 53.1%;
+      /* Chart kit — 10 distinct (locked) */
+      --chart-1: 40 24% 97.5%;
+      --chart-2: 214 20% 72%;
+      --chart-3: 221.2 83.2% 53.3%;
+      --chart-4: 188 38% 38%;
+      --chart-5: 214 16% 42%;
+      --chart-6: 214 39% 17%;
+      --chart-7: 30 12% 55%;
+      --chart-8: 18 48% 38%;
+      --chart-9: 24.6 95% 53.1%;
+      --chart-10: 45 70% 58%;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: hsl(var(--brand-navy-deep));
+      color: hsl(var(--ink-cream));
+      min-height: 100vh;
+      padding: 2rem 1.5rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .frame {
+      position: relative;
+      max-width: 1080px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: calc(var(--radius) * 3);
+      border: 1px solid hsl(var(--brand-navy-deep));
+      background: hsl(var(--brand-navy-deep));
+      padding: 1.65rem 1.7rem 1.4rem;
+    }
+
+    .wash {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wash__base {
+      position: absolute;
+      inset: 0;
+      background: hsl(var(--brand-navy));
+    }
+
+    .wash__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.08) rotate(-2deg);
+      opacity: 0.92;
+      mix-blend-mode: soft-light;
+    }
+
+    .wash__img--2 {
+      transform: scale(1.12) rotate(1.5deg);
+      opacity: 0.45;
+      mix-blend-mode: overlay;
+    }
+
+    .wash__veil {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          180deg,
+          hsl(var(--brand-navy) / 0.12) 0%,
+          transparent 30%,
+          transparent 55%,
+          hsl(var(--brand-navy-deep) / 0.88) 100%
+        ),
+        linear-gradient(
+          90deg,
+          hsl(var(--brand-navy-deep) / 0.45) 0%,
+          transparent 40%,
+          transparent 70%,
+          hsl(var(--brand-navy-deep) / 0.3) 100%
+        );
+    }
+
+    .frame__in {
+      position: relative;
+      z-index: 1;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1.35rem;
+      padding-bottom: 1.1rem;
+      border-bottom: 1px solid hsl(var(--ink-cream) / 0.18);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      color: hsl(var(--ink-cream));
+    }
+
+    .sub {
+      margin-top: 0.45rem;
+      font-size: 13px;
+      line-height: 1.45;
+      color: hsl(var(--ink-cream) / 0.72);
+      max-width: 36rem;
+    }
+
+    .brand {
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+
+    .brand img {
+      display: block;
+      height: 36px;
+      width: auto;
+    }
+
+    .chart-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 0.75rem 1.25rem;
+      margin-bottom: 0.95rem;
+    }
+
+    .chart-head h2 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: hsl(var(--ink-cream));
+    }
+
+    .meta {
+      font-size: 12px;
+      font-weight: 500;
+      color: hsl(var(--ink-cream) / 0.72);
+    }
+
+    .hint {
+      font-size: 11px;
+      line-height: 1.4;
+      color: hsl(var(--ink-cream) / 0.72);
+      max-width: 16rem;
+      text-align: right;
+    }
+
+    .hint strong {
+      color: hsl(var(--logo-orange));
+      font-weight: 600;
+    }
+
+    .plot {
+      position: relative;
+      height: 340px;
+      margin: 0.25rem 0 0.35rem;
+      border-bottom: 1px solid hsl(var(--ink-cream) / 0.18);
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0 0 0 2.5rem;
+      pointer-events: none;
+    }
+
+    .grid-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid hsl(var(--ink-cream) / 0.14);
+    }
+
+    .grid-line--threshold {
+      border-top: 1.5px dashed hsl(var(--logo-orange));
+      z-index: 2;
+    }
+
+    .y-label {
+      position: absolute;
+      left: 0;
+      width: 2.2rem;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      color: hsl(var(--ink-cream) / 0.72);
+      text-align: right;
+    }
+
+    .y-label--threshold {
+      color: hsl(var(--logo-orange));
+    }
+
+    .bars {
+      position: absolute;
+      left: 2.5rem;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 0.28rem;
+      padding: 0 0.2rem;
+      z-index: 3;
+    }
+
+    .col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+    }
+
+    .val {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: hsl(var(--ink-cream));
+      margin-bottom: 0.28rem;
+      white-space: nowrap;
+    }
+
+    .bar {
+      width: 70%;
+      max-width: 38px;
+      border-radius: 4px 4px 2px 2px;
+      min-height: 2px;
+    }
+
+    .bar--1 { background: hsl(var(--chart-1)); }
+    .bar--2 { background: hsl(var(--chart-2)); }
+    .bar--3 { background: hsl(var(--chart-3)); }
+    .bar--4 { background: hsl(var(--chart-4)); }
+    .bar--5 { background: hsl(var(--chart-5)); }
+    .bar--6 { background: hsl(var(--chart-6)); }
+    .bar--7 { background: hsl(var(--chart-7)); }
+    .bar--8 { background: hsl(var(--chart-8)); }
+    .bar--9 { background: hsl(var(--chart-9)); }
+    .bar--10 { background: hsl(var(--chart-10)); }
+    .bar--outline {
+      box-shadow: inset 0 0 0 1px hsl(var(--ink-cream) / 0.28);
+    }
+
+    .x-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.28rem;
+      padding: 0.7rem 0.2rem 0 2.5rem;
+    }
+
+    .x {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.25;
+    }
+
+    .x__name {
+      font-weight: 700;
+      color: hsl(var(--ink-cream));
+      font-size: 11px;
+      letter-spacing: -0.02em;
+    }
+
+    .x__name.is-alert {
+      color: hsl(var(--logo-orange));
+    }
+
+    .x__host {
+      margin-top: 0.12rem;
+      color: hsl(var(--ink-cream) / 0.65);
+      font-weight: 500;
+      font-size: 10px;
+    }
+
+    .callout {
+      position: absolute;
+      left: 2.5rem;
+      top: 10%;
+      width: min(250px, 30%);
+      z-index: 4;
+      padding: 0.55rem 0.7rem;
+      background: hsl(var(--brand-navy-deep) / 0.72);
+      font-size: 11px;
+      line-height: 1.4;
+      color: hsl(var(--ink-cream) / 0.78);
+      pointer-events: none;
+      border-radius: calc(var(--radius) * 0.75);
+    }
+
+    .callout strong {
+      display: block;
+      color: hsl(var(--ink-cream));
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.2rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid hsl(var(--ink-cream) / 0.18);
+      font-size: 12px;
+    }
+
+    .footer a {
+      color: hsl(var(--ink-cream));
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame" aria-label="AgentMail time to first result">
+    <div class="wash" aria-hidden="true">
+      <div class="wash__base"></div>
+      <img class="wash__img" src="hero-wash-navy.jpg" alt="" />
+      <img class="wash__img wash__img--2" src="hero-wash-navy.jpg" alt="" />
+      <div class="wash__veil"></div>
+    </div>
+
+    <div class="frame__in">
+      <header class="top">
+        <div>
+          <h1>Time to first result</h1>
+          <p class="sub">Wall time from connect through a tool result on AgentMail. Fourteen residential runs, 8–14 Sep 2026.</p>
+        </div>
+        <div class="brand">
+          <img
+            src="agentstatus-wordmark-white.svg"
+            alt="AgentStatus"
+            width="230"
+            height="70"
+          />
+        </div>
+      </header>
+
+      <div class="chart-head">
+        <div>
+          <h2>Seconds to first result · Lower is better</h2>
+          <p class="meta">AgentMail · 14 of 14 runs · residential node</p>
+        </div>
+        <p class="hint">Dashed line is <strong>10s</strong>.</p>
+      </div>
+
+      <div class="plot">
+        <div class="grid" aria-hidden="true">
+          <div class="grid-line" style="top:0%"></div>
+          <div class="grid-line" style="top:33.33%"></div>
+          <div class="grid-line grid-line--threshold" style="top:66.67%"></div>
+          <div class="grid-line" style="top:100%"></div>
+          <span class="y-label" style="top:0%">30s</span>
+          <span class="y-label" style="top:33.33%">20s</span>
+          <span class="y-label y-label--threshold" style="top:66.67%">10s</span>
+          <span class="y-label" style="top:100%">0</span>
+        </div>
+
+        <aside class="callout">
+          <strong>Two of fourteen crossed 10s.</strong>
+          Slowest 28.0s on 8 Sep. Median 4.42s.
+        </aside>
+
+        <div class="bars" id="bars"></div>
+      </div>
+
+      <div class="x-labels" id="xlabels"></div>
+
+      <footer class="footer">
+        <p><a href="https://agentstatus.dev">agentstatus.dev</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const MAX = 30;
+    /* Connection ledger wall times, fastest → slowest. Do not invent per-host latencies. */
+    const rows = [
+      { date: "14 Sep", time: "05:34", color: 1, sec: 2.53 },
+      { date: "10 Sep", time: "13:37", color: 2, sec: 2.6 },
+      { date: "12 Sep", time: "", color: 3, sec: 2.89 },
+      { date: "12 Sep", time: "", color: 4, sec: 3.13 },
+      { date: "12 Sep", time: "", color: 5, sec: 3.58 },
+      { date: "12 Sep", time: "", color: 6, sec: 3.75 },
+      { date: "12 Sep", time: "", color: 7, sec: 4.42 },
+      { date: "12 Sep", time: "", color: 8, sec: 5.99 },
+      { date: "9 Sep", time: "08:32", color: 10, sec: 7.49 },
+      { date: "11 Sep", time: "17:56", color: 2, sec: 7.72 },
+      { date: "12 Sep", time: "", color: 3, sec: 8.9 },
+      { date: "13 Sep", time: "08:35", color: 4, sec: 9.32 },
+      { date: "10 Sep", time: "01:39", color: 9, sec: 15.2, alert: true },
+      { date: "8 Sep", time: "13:39", color: 9, sec: 28.0, alert: true },
+    ];
+
+    function fmt(sec) {
+      return (sec >= 10 ? sec.toFixed(1) : sec.toFixed(2)) + "s";
+    }
+
+    const bars = document.getElementById("bars");
+    const xlabels = document.getElementById("xlabels");
+
+    rows.forEach((r) => {
+      const h = Math.max(0.8, (r.sec / MAX) * 100);
+      const outline = r.color === 6 ? " bar--outline" : "";
+      const col = document.createElement("div");
+      col.className = "col";
+      col.innerHTML =
+        '<div class="val">' +
+        fmt(r.sec) +
+        "</div>" +
+        '<div class="bar bar--' +
+        r.color +
+        outline +
+        '" style="height:' +
+        h +
+        '%" title="' +
+        r.date +
+        (r.time ? " " + r.time : "") +
+        " · " +
+        fmt(r.sec) +
+        '"></div>';
+      bars.appendChild(col);
+
+      const x = document.createElement("div");
+      x.className = "x";
+      x.innerHTML =
+        '<div class="x__name' +
+        (r.alert ? " is-alert" : "") +
+        '">' +
+        r.date +
+        "</div>" +
+        (r.time ? '<div class="x__host">' + r.time + "</div>" : "");
+      xlabels.appendChild(x);
+    });
+  </script>
+  <script src="export-png.js"></script>
+</body>
+</html>

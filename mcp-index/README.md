@@ -22,6 +22,7 @@ Teammates open the HTTPS link, toggle styles, and use **Download PNG**.
 | Semgrep infographic | [semgrep-infographic.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/semgrep-infographic.html) |
 | Attio infographic | [attio-infographic.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/attio-infographic.html) |
 | AgentMail infographic | [agentmail-infographic.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/agentmail-infographic.html) |
+| AgentMail time to first result | [agentmail-time-to-first-result.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/agentmail-time-to-first-result.html) |
 | Firecrawl | [server-scorecard.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-scorecard.html) |
 | Comparison (W2) | [server-comparison.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-comparison.html) |
 | Cycle-12 bars | [cycle-12-time-to-first-result.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/cycle-12-time-to-first-result.html) |
