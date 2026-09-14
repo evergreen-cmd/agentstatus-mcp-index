@@ -10,3 +10,11 @@ AgentMail (14 Sep 2026, light):
   agentmail-infographic-multistep-light.png
   agentmail-infographic-hosts-light.png
   agentmail-infographic-poster-light.png
+
+Semgrep (14 Sep 2026, light):
+  semgrep-infographic-catalog-light.png
+  semgrep-infographic-connection-light.png
+  semgrep-infographic-history-light.png
+  semgrep-infographic-invokes-light.png
+  semgrep-infographic-hosts-light.png
+  semgrep-infographic-poster-light.png

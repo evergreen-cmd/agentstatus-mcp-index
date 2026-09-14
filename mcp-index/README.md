@@ -19,6 +19,7 @@ Teammates open the HTTPS link, toggle styles, and use **Download PNG**.
 | Card | URL |
 |------|-----|
 | Semgrep | [semgrep-scorecard.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/semgrep-scorecard.html) |
+| Semgrep infographic | [semgrep-infographic.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/semgrep-infographic.html) |
 | AgentMail infographic | [agentmail-infographic.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/agentmail-infographic.html) |
 | Firecrawl | [server-scorecard.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-scorecard.html) |
 | Comparison (W2) | [server-comparison.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-comparison.html) |

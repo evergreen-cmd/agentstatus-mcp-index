@@ -159,6 +159,42 @@ const JOBS = [
     wash: "light",
     style: "poster",
   },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-catalog-light",
+    wash: "light",
+    style: "catalog",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-connection-light",
+    wash: "light",
+    style: "connection",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-history-light",
+    wash: "light",
+    style: "history",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-invokes-light",
+    wash: "light",
+    style: "invokes",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-hosts-light",
+    wash: "light",
+    style: "hosts",
+  },
+  {
+    file: "semgrep-infographic.html",
+    slug: "semgrep-infographic-poster-light",
+    wash: "light",
+    style: "poster",
+  },
 ];
 
 async function bakeWashes(browser) {
