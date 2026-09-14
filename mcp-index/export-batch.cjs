@@ -195,6 +195,42 @@ const JOBS = [
     wash: "light",
     style: "poster",
   },
+  {
+    file: "attio-infographic.html",
+    slug: "attio-infographic-catalog-light",
+    wash: "light",
+    style: "catalog",
+  },
+  {
+    file: "attio-infographic.html",
+    slug: "attio-infographic-connection-light",
+    wash: "light",
+    style: "connection",
+  },
+  {
+    file: "attio-infographic.html",
+    slug: "attio-infographic-history-light",
+    wash: "light",
+    style: "history",
+  },
+  {
+    file: "attio-infographic.html",
+    slug: "attio-infographic-multistep-light",
+    wash: "light",
+    style: "multistep",
+  },
+  {
+    file: "attio-infographic.html",
+    slug: "attio-infographic-hosts-light",
+    wash: "light",
+    style: "hosts",
+  },
+  {
+    file: "attio-infographic.html",
+    slug: "attio-infographic-poster-light",
+    wash: "light",
+    style: "poster",
+  },
 ];
 
 async function bakeWashes(browser) {
