@@ -354,7 +354,7 @@
       <header class="top">
         <div>
           <h1>Time to first result</h1>
-          <p class="sub">Wall time from connect through a tool result on AgentMail. Fourteen residential runs, 8–14 Sep 2026.</p>
+          <p class="sub">Wall time from connect through a tool result on AgentMail. 14 residential runs, 8–14&nbsp;Sep&nbsp;2026.</p>
         </div>
         <div class="brand">
           <img
@@ -459,7 +459,9 @@
         '">' +
         r.date +
         "</div>" +
-        (r.time ? '<div class="x__host">' + r.time + "</div>" : "");
+        '<div class="x__host">' +
+        (r.time || "&nbsp;") +
+        "</div>";
       xlabels.appendChild(x);
     });
   </script>
