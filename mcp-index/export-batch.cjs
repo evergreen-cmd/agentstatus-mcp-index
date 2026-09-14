@@ -123,6 +123,42 @@ const JOBS = [
     wash: "light",
     style: "poster",
   },
+  {
+    file: "agentmail-infographic.html",
+    slug: "agentmail-infographic-catalog-light",
+    wash: "light",
+    style: "catalog",
+  },
+  {
+    file: "agentmail-infographic.html",
+    slug: "agentmail-infographic-connection-light",
+    wash: "light",
+    style: "connection",
+  },
+  {
+    file: "agentmail-infographic.html",
+    slug: "agentmail-infographic-history-light",
+    wash: "light",
+    style: "history",
+  },
+  {
+    file: "agentmail-infographic.html",
+    slug: "agentmail-infographic-multistep-light",
+    wash: "light",
+    style: "multistep",
+  },
+  {
+    file: "agentmail-infographic.html",
+    slug: "agentmail-infographic-hosts-light",
+    wash: "light",
+    style: "hosts",
+  },
+  {
+    file: "agentmail-infographic.html",
+    slug: "agentmail-infographic-poster-light",
+    wash: "light",
+    style: "poster",
+  },
 ];
 
 async function bakeWashes(browser) {
