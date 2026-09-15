@@ -6,6 +6,14 @@ Re-export: node export-batch.cjs
 AgentMail time to first result (navy, 8–14 Sep 2026):
   agentmail-time-to-first-result-navy.png
 
+Jam infographic (15 Sep 2026, light):
+  jam-infographic-catalog-light.png
+  jam-infographic-connection-light.png
+  jam-infographic-history-light.png
+  jam-infographic-multistep-light.png
+  jam-infographic-hosts-light.png
+  jam-infographic-poster-light.png
+
 AgentMail (14 Sep 2026, light):
   agentmail-infographic-catalog-light.png
   agentmail-infographic-connection-light.png

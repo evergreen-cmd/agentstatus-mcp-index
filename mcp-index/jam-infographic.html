@@ -508,6 +508,7 @@
       foot.textContent = FOOT;
     }
     sync();
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["data-style"] });
 
     document.querySelectorAll("[data-wash-btn]").forEach((btn) => {
       btn.addEventListener("click", () => {
