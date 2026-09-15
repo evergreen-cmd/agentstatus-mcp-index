@@ -140,6 +140,12 @@
 
     .matrix { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; }
     .matrix--hosts { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    html[data-style="catalog"] .cell {
+      min-height: 50px;
+      padding: 0.3rem 0.34rem 0.28rem;
+    }
+    html[data-style="catalog"] .cell__host { font-size: 10px; }
+    html[data-style="catalog"] .cell__code { font-size: 8px; }
     @media (max-width: 720px) {
       .matrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .matrix--hosts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -148,7 +154,7 @@
     .cell {
       border: 1px solid; border-radius: calc(var(--radius) * 1.25);
       padding: 0.42rem 0.45rem 0.4rem; min-height: 56px;
-      display: flex; flex-direction: column; gap: 0.22rem;
+      display: flex; flex-direction: column; gap: 0.18rem;
     }
     .cell__host { font-size: 11px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; }
     .cell__code { font-size: 9px; font-weight: 500; opacity: 0.62; letter-spacing: -0.01em; }
@@ -210,7 +216,7 @@
       letter-spacing: -0.045em; line-height: 1; margin: 0.45rem 0 0.5rem;
     }
     .poster__stat span { color: hsl(var(--logo-orange)); }
-    .poster__line { font-size: 17px; font-weight: 600; line-height: 1.35; max-width: 40rem; letter-spacing: -0.02em; }
+    .poster__line { font-size: 17px; font-weight: 600; line-height: 1.35; max-width: 42rem; letter-spacing: -0.02em; }
     .poster__hosts { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 1.05rem; }
 
     .footer {
@@ -233,7 +239,7 @@
 <body>
   <div class="chooser">
     <h1>Semgrep infographic · from AgentStatus dashboard</h1>
-    <p>Overview, Connection, Invokes, Tool History, and Host Compatibility. Six share cards. Navy or Abstract light.</p>
+    <p>Overview, Connection, Invokes, Tool History, and Host Compatibility. Six share cards. Navy or Abstract light. ChatGPT and Claude omitted.</p>
     <div class="row" role="group" aria-label="Wash">
       <span>Wash</span>
       <button type="button" data-wash-btn="navy">Navy</button>
@@ -289,17 +295,17 @@
             </div>
             <div class="kpi">
               <div class="kpi__label">Median run</div>
-              <div class="kpi__value">5.77s</div>
+              <div class="kpi__value">5.22s</div>
               <div class="kpi__hint">Lower is better</div>
             </div>
             <div class="kpi">
               <div class="kpi__label">Slowest run</div>
               <div class="kpi__value">19.4s</div>
-              <div class="kpi__hint">13 Sep 2026, 19:35</div>
+              <div class="kpi__hint">13 Sep 2026, 7:35 PM</div>
             </div>
             <div class="kpi">
               <div class="kpi__label">Ledger</div>
-              <div class="kpi__value">13 of 13</div>
+              <div class="kpi__value">17 of 17</div>
               <div class="kpi__hint">Every run healthy</div>
             </div>
           </div>
@@ -337,8 +343,8 @@
 
         <section class="panel" id="panel-poster">
           <div class="poster">
-            <p class="poster__stat"><span>16</span> / 18</p>
-            <p class="poster__line">hosts cleared tools/call on 14 Sep 2026. ChatGPT and Claude stopped at Auth. They cannot send Authorization.</p>
+            <p class="poster__stat"><span>16</span> / 16</p>
+            <p class="poster__line">hosts completed a tool invoke on 15 Sep 2026. 5 of 7 advertised tools were called from a residential node. Median run 5.22s.</p>
             <div class="poster__hosts" id="poster-hosts"></div>
           </div>
         </section>
@@ -353,7 +359,7 @@
 
   <div class="outreach">
     <strong>Outreach first line (copy)</strong>
-    Semgrep cleared tools/call in 16 of 18 hosts on 14 Sep 2026. ChatGPT and Claude stopped at Auth. 5 of 5 invoked tools did the job (median 5.77s). Here's the run: agentstatus.dev.
+    Semgrep's MCP completed a tool invoke on 16 of 16 hosts on 15 Sep 2026. 5 of 7 advertised tools were called from a residential node (median 5.22s, 17 of 17 runs). Here's the run: agentstatus.dev.
   </div>
 
   <script>
@@ -367,33 +373,31 @@
       { name: "Semgrep whoami", code: "semgrep_whoami", status: "ok" },
     ];
     const hosts = [
-      { name: "ChatGPT", status: "fail", note: "Can't send Authorization", label: "Stopped at Auth" },
-      { name: "Claude", status: "fail", note: "Can't send Authorization", label: "Stopped at Auth" },
-      { name: "AWS AgentCore", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Claude Code", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Cline", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Codex", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Copilot", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Copilot CLI", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Cursor", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Cursor CLI", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Goose", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Mistral", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "n8n", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Notion", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Perplexity", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Slackbot", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "VS Code", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
-      { name: "Windsurf", status: "ok", note: "7 tools · 3 of 3", label: "Cleared" },
+      { name: "AWS AgentCore", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Claude Code", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Cline", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Codex", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Copilot", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Copilot CLI", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Cursor", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Cursor CLI", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Goose", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Mistral", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "n8n", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Notion", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Perplexity", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Slackbot", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "VS Code", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
+      { name: "Windsurf", status: "ok", note: "7 tools · 3 of 3", label: "Completed" },
     ];
     const labels = { ok: "Called", listed: "Listed only" };
     const claims = {
-      catalog: 'Called <strong>5 of 7</strong> advertised tools on <strong>14 Sep 2026</strong>. Two were listed only.',
-      connection: '<strong>13 of 13</strong> runs passed. Median run <strong>5.77s</strong>. Last failure none.',
-      history: 'All <strong>5</strong> invoked tools cleared on the latest run. Two advertised tools stayed listed only.',
-      invokes: '<strong>5 of 5</strong> planned checks were called, answered, and did the job.',
-      hosts: '<strong>ChatGPT</strong> and <strong>Claude</strong> stopped at Auth. <strong>16 of 18</strong> hosts cleared tools/call on <strong>14 Sep 2026</strong>.',
-      poster: 'Cleared <strong>tools/call</strong> in <strong>16 of 18</strong> hosts on <strong>14 Sep 2026</strong>.',
+      catalog: "Semgrep's MCP advertised 7 tools on <strong>15 Sep 2026</strong>. Called <strong>5 of 7</strong>. Two were listed only.",
+      connection: "<strong>17 of 17</strong> runs passed. Median run <strong>5.22s</strong>. Last failure none.",
+      history: "<strong>5 of 7</strong> advertised tools have call history. All 5 did the job on the latest run.",
+      invokes: "<strong>5 of 5</strong> planned checks were called, answered, and passed the functional check. semgrep_scan_remote answered with a deprecation notice that hosted scans no longer run.",
+      hosts: "Completed a tool invoke end to end in <strong>16 of 16</strong> hosts on <strong>15 Sep 2026</strong>. 7 tools listed, 3 of 3 answered.",
+      poster: "Semgrep's MCP completed a tool invoke on <strong>16 of 16</strong> hosts on <strong>15 Sep 2026</strong>.",
     };
     const FOOT = "Independent residential run. Create an account to see the full log and what to fix.";
 
@@ -435,7 +439,7 @@
     const listed = tools.filter((t) => t.status === "listed");
     document.getElementById("history-split").innerHTML =
       '<div class="bucket"><h2>Call history</h2><p class="tag">' + called.length +
-      ' of 7 advertised tools · all 5 cleared on the latest run</p><div class="chip-row">' + chips(called, "chip--ok") +
+      ' of 7 advertised tools · 17 runs · 6d window</p><div class="chip-row">' + chips(called, "chip--ok") +
       '</div></div><div class="bucket"><h2>Listed only</h2><p class="tag">' + listed.length +
       ' tools · stay listed unless pinned</p><div class="chip-row">' +
       chips(listed, "chip--listed") + "</div></div>";
@@ -443,11 +447,11 @@
     document.getElementById("steps").innerHTML = [
       { n: 1, name: "Transport", note: "", status: "ok", label: "Passed" },
       { n: 2, name: "Auth gate", note: "Residential probe sends a key", status: "ok", label: "Passed" },
-      { n: 3, name: "Protocol negotiate", note: "", status: "ok", label: "Passed" },
+      { n: 3, name: "Protocol negotiate", note: "Legacy initialize+session succeeded", status: "ok", label: "Passed" },
       { n: 4, name: "Capabilities", note: "", status: "skip", label: "Skipped" },
       { n: 5, name: "List tools and resources", note: "7 tools advertised", status: "ok", label: "Passed" },
       { n: 6, name: "List prompts", note: "", status: "skip", label: "Skipped" },
-      { n: 7, name: "Invoke tools", note: "5 of 5 planned checks did the job", status: "ok", label: "Passed" },
+      { n: 7, name: "Invoke tools", note: "5 of 5 planned checks called, answered, and did the job", status: "ok", label: "Passed" },
     ].map((s) =>
       '<div class="step" data-status="' + s.status + '">' +
         '<div class="step__n">' + s.n + "</div>" +
@@ -460,7 +464,7 @@
     document.getElementById("invoke-steps").innerHTML = [
       { n: 1, name: "get_abstract_syntax_tree", note: "Got an answer. Did the job.", status: "ok", label: "Did the job" },
       { n: 2, name: "get_supported_languages", note: "Got an answer. Did the job.", status: "ok", label: "Did the job" },
-      { n: 3, name: "semgrep_scan_remote", note: "Got an answer. Did the job.", status: "ok", label: "Did the job" },
+      { n: 3, name: "semgrep_scan_remote", note: "Answered and passed the functional check. Reply was a deprecation notice that hosted scans no longer run.", status: "ok", label: "Did the job" },
       { n: 4, name: "semgrep_scan_with_custom_rule", note: "Got an answer. Did the job.", status: "ok", label: "Did the job" },
       { n: 5, name: "semgrep_whoami", note: "Got an answer. Did the job.", status: "ok", label: "Did the job" },
     ].map((s) =>
@@ -481,6 +485,7 @@
       foot.textContent = FOOT;
     }
     sync();
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["data-style"] });
 
     document.querySelectorAll("[data-wash-btn]").forEach((btn) => {
       btn.addEventListener("click", () => {
