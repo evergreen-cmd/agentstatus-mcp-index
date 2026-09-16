@@ -22,6 +22,9 @@ Teammates open the HTTPS link, toggle styles, and use **Download PNG**.
 | Firecrawl | [server-scorecard.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-scorecard.html) |
 | Comparison (W2) | [server-comparison.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/server-comparison.html) |
 | Cycle-12 bars | [cycle-12-time-to-first-result.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/cycle-12-time-to-first-result.html) |
+| Host vs MCP chain | [host-side-chain.html](https://evergreen-cmd.github.io/agentstatus-mcp-index/mcp-index/host-side-chain.html) |
+
+Walkthrough clip still: open the chain card, click **Record 16:9** (or add `#record`), put that on screen for the opening. Ready PNG: `mcp-index/exports/host-side-chain-navy.png`.
 
 Ready PNGs (when exported): `mcp-index/exports/`
 
