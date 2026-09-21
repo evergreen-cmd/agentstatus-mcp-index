@@ -232,6 +232,42 @@ const JOBS = [
     wash: "light",
     style: "poster",
   },
+  {
+    file: "jam-infographic.html",
+    slug: "jam-infographic-catalog-light",
+    wash: "light",
+    style: "catalog",
+  },
+  {
+    file: "jam-infographic.html",
+    slug: "jam-infographic-connection-light",
+    wash: "light",
+    style: "connection",
+  },
+  {
+    file: "jam-infographic.html",
+    slug: "jam-infographic-history-light",
+    wash: "light",
+    style: "history",
+  },
+  {
+    file: "jam-infographic.html",
+    slug: "jam-infographic-multistep-light",
+    wash: "light",
+    style: "multistep",
+  },
+  {
+    file: "jam-infographic.html",
+    slug: "jam-infographic-hosts-light",
+    wash: "light",
+    style: "hosts",
+  },
+  {
+    file: "jam-infographic.html",
+    slug: "jam-infographic-poster-light",
+    wash: "light",
+    style: "poster",
+  },
 ];
 
 async function bakeWashes(browser) {
