@@ -126,6 +126,10 @@ const JOBS = [
   { file: "reliability-frontier.html", slug: "reliability-score-vs-latency-light", wash: "light", style: "score" },
   { file: "reliability-frontier.html", slug: "reliability-tool-success-vs-latency-light", wash: "light", style: "tools" },
   { file: "reliability-frontier.html", slug: "reliability-score-ranking-light", wash: "light", style: "bars" },
+  { file: "reach-comparison.html", slug: "reach-comparison-full-light", wash: "light", style: "full" },
+  { file: "reach-comparison.html", slug: "reach-comparison-zoom-light", wash: "light", style: "zoom" },
+  { file: "reach-comparison.html", slug: "reach-comparison-columns-light", wash: "light", style: "columns" },
+  { file: "reach-comparison.html", slug: "reach-comparison-lollipop-light", wash: "light", style: "lollipop" },
 ];
 
 async function bakeWashes(browser) {
@@ -214,7 +218,7 @@ html[data-wash="light"] .wash__veil{background:linear-gradient(180deg,hsl(var(--
             document.querySelectorAll("[data-style-btn]").forEach((b) => {
               b.classList.toggle("is-on", b.dataset.styleBtn === style);
             });
-            if (["score", "tools", "bars"].includes(style) && typeof render === "function") {
+            if (["score", "tools", "bars", "full", "zoom", "columns", "lollipop"].includes(style) && typeof render === "function") {
               view = style;
               render();
             }

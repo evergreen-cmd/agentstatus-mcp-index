@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" data-wash="light" data-style="zoom">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MCP Index · Reach comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: 214 39% 17%;
+      --brand-navy-deep: 220 38% 10%;
+      --ink-cream: 40 24% 97.5%;
+      --surface-cream: 40 33% 97%;
+      --border: 214.3 31.8% 91.4%;
+      --radius: 0.5rem;
+      --logo-orange: 24.6 95% 53.1%;
+      --ok: 188 38% 38%;
+      --fail: 24.6 95% 53.1%;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      min-height: 100vh;
+      padding: 1.25rem 1.25rem 3rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .chooser { max-width: 1040px; margin: 0 auto 1.1rem; }
+    .chooser h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.03em; }
+    .chooser p { margin-top: 0.25rem; font-size: 12px; line-height: 1.4; opacity: 0.7; max-width: 44rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; align-items: center; }
+    .row span { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.65; margin-right: 0.2rem; }
+    .row button {
+      font-family: inherit; font-size: 12px; font-weight: 700;
+      padding: 0.4rem 0.7rem; border-radius: var(--radius); border: 1px solid; cursor: pointer;
+    }
+    .nav-link { margin-top: 0.85rem; font-size: 12px; }
+    .nav-link a { font-weight: 700; text-decoration: none; }
+
+    .stage { max-width: 1040px; margin: 0 auto; }
+    .frame { position: relative; overflow: hidden; border-radius: calc(var(--radius) * 3); padding: 1.15rem; }
+    .wash { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .wash__base { position: absolute; inset: 0; }
+    .wash__img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      transform: scale(1.08) rotate(-2deg); opacity: 0.92;
+    }
+    .wash__veil { position: absolute; inset: 0; }
+    .sheet { position: relative; z-index: 1; border-radius: calc(var(--radius) * 2.5); padding: 1.45rem 1.5rem 1.25rem; }
+
+    html[data-wash="navy"] body { background: hsl(var(--brand-navy-deep)); color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .chooser h1 { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .row button { background: hsl(var(--brand-navy)); border-color: hsl(var(--ink-cream) / 0.2); color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .row button.is-on { background: hsl(var(--logo-orange)); border-color: hsl(var(--logo-orange)); color: hsl(var(--brand-navy-deep)); }
+    html[data-wash="navy"] .frame { border: 1px solid hsl(var(--brand-navy-deep)); background: hsl(var(--brand-navy-deep)); }
+    html[data-wash="navy"] .wash__base { background: hsl(var(--brand-navy)); }
+    html[data-wash="navy"] .wash__img { mix-blend-mode: soft-light; }
+    html[data-wash="navy"] .wash__img--2 { display: block; transform: scale(1.12) rotate(1.5deg); opacity: 0.45; mix-blend-mode: overlay; }
+    html[data-wash="navy"] .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--brand-navy) / 0.12) 0%, transparent 30%, transparent 55%, hsl(var(--brand-navy-deep) / 0.88) 100%),
+        linear-gradient(90deg, hsl(var(--brand-navy-deep) / 0.45) 0%, transparent 40%, transparent 70%, hsl(var(--brand-navy-deep) / 0.3) 100%);
+    }
+    html[data-wash="navy"] .sheet { background: transparent; border: none; color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .logo--light { display: none; }
+    html[data-wash="navy"] .logo--dark { display: block; }
+    html[data-wash="navy"] .nav-link a, html[data-wash="navy"] .footer a { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .tile, html[data-wash="navy"] .plot-card { background: hsl(var(--brand-navy-deep) / 0.45); border-color: hsl(var(--ink-cream) / 0.14); }
+    html[data-wash="navy"] .top, html[data-wash="navy"] .footer { border-color: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .h-row { border-color: hsl(var(--ink-cream) / 0.1); }
+    html[data-wash="navy"] .track { background: hsl(var(--ink-cream) / 0.1); }
+    html[data-wash="navy"] .gline { border-color: hsl(var(--ink-cream) / 0.16); }
+    html[data-wash="navy"] .bars { border-color: hsl(var(--ink-cream) / 0.18); }
+    html[data-wash="navy"] .ylab, html[data-wash="navy"] .x__name, html[data-wash="navy"] .val { color: hsl(var(--ink-cream)); }
+    html[data-wash="navy"] .axis { color: hsl(var(--ink-cream) / 0.6); }
+    html[data-wash="navy"] .break { color: hsl(var(--ink-cream) / 0.45); }
+
+    html[data-wash="light"] body { background: hsl(var(--surface-cream)); color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .row button { background: hsl(0 0% 100%); border-color: hsl(var(--border)); color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .row button.is-on { background: hsl(var(--brand-navy)); border-color: hsl(var(--brand-navy)); color: hsl(var(--ink-cream)); }
+    html[data-wash="light"] .frame { border: 1px solid hsl(var(--brand-navy) / 0.12); background: hsl(var(--surface-cream)); padding: 1.3rem; }
+    html[data-wash="light"] .wash__base { background: hsl(var(--surface-cream)); }
+    html[data-wash="light"] .wash__img { mix-blend-mode: multiply; opacity: 0.95; }
+    html[data-wash="light"] .wash__img--2 { display: none; }
+    html[data-wash="light"] .wash__veil {
+      background:
+        linear-gradient(180deg, hsl(var(--surface-cream) / 0.15) 0%, transparent 28%, transparent 62%, hsl(var(--surface-cream) / 0.55) 100%),
+        linear-gradient(90deg, hsl(var(--surface-cream) / 0.3) 0%, transparent 40%, transparent 70%, hsl(var(--surface-cream) / 0.2) 100%);
+    }
+    html[data-wash="light"] .sheet {
+      background: hsl(var(--surface-cream) / 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid hsl(var(--brand-navy) / 0.1);
+      box-shadow: 0 1px 0 hsl(0 0% 100% / 0.65) inset, 0 24px 48px -28px hsl(var(--brand-navy) / 0.28);
+      color: hsl(var(--brand-navy));
+    }
+    html[data-wash="light"] .logo--dark { display: none; }
+    html[data-wash="light"] .logo--light { display: block; }
+    html[data-wash="light"] .nav-link a, html[data-wash="light"] .footer a { color: hsl(var(--brand-navy)); }
+    html[data-wash="light"] .tile, html[data-wash="light"] .plot-card { background: hsl(0 0% 100% / 0.55); border-color: hsl(var(--brand-navy) / 0.1); }
+    html[data-wash="light"] .top, html[data-wash="light"] .footer { border-color: hsl(var(--brand-navy) / 0.12); }
+    html[data-wash="light"] .h-row { border-color: hsl(var(--brand-navy) / 0.08); }
+    html[data-wash="light"] .track { background: hsl(var(--brand-navy) / 0.08); }
+    html[data-wash="light"] .gline { border-color: hsl(var(--brand-navy) / 0.1); }
+    html[data-wash="light"] .bars { border-color: hsl(var(--brand-navy) / 0.12); }
+    html[data-wash="light"] .axis { color: hsl(var(--brand-navy) / 0.55); }
+    html[data-wash="light"] .break { color: hsl(var(--brand-navy) / 0.4); }
+
+    .top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+      margin-bottom: 1rem; padding-bottom: 0.95rem; border-bottom: 1px solid;
+    }
+    .sheet > .top h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.15; }
+    .claim { margin-top: 0.4rem; font-size: 14px; font-weight: 600; line-height: 1.4; max-width: 40rem; }
+    .claim strong { color: hsl(var(--logo-orange)); font-weight: 700; }
+    .brand img { height: 32px; width: auto; display: block; }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.5rem; margin-bottom: 0.85rem;
+    }
+    @media (max-width: 720px) { .stats { grid-template-columns: 1fr 1fr; } }
+    .tile { border: 1px solid; border-radius: calc(var(--radius) * 1.25); padding: 0.7rem 0.8rem 0.65rem; }
+    .tile .k { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; opacity: 0.6; }
+    .tile .v { margin-top: 0.2rem; font-size: 26px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; }
+    .tile .s { margin-top: 0.2rem; font-size: 11px; font-weight: 600; opacity: 0.62; line-height: 1.3; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 0.65rem 1rem; font-size: 12px; font-weight: 600; margin-bottom: 0.7rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+    .swatch--ok { background: hsl(var(--ok)); }
+    .swatch--fail { background: hsl(var(--fail)); }
+    .swatch--prov { background: transparent; box-shadow: inset 0 0 0 2px hsl(var(--ok)); }
+
+    .plot-card { border: 1px solid; border-radius: calc(var(--radius) * 1.5); padding: 1rem 1rem 0.85rem; }
+    .hint { font-size: 12px; font-weight: 600; opacity: 0.65; text-align: center; margin-top: 0.55rem; }
+
+    .firm { display: flex; align-items: center; gap: 0.55rem; min-width: 0; }
+    .firm img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+    .firm__name { font-size: 13px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+    .firm__meta { margin-top: 0.12rem; font-size: 11px; font-weight: 600; opacity: 0.62; }
+    .pill {
+      display: inline-block; margin-left: 0.35rem; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase; padding: 0.12rem 0.4rem;
+      border-radius: 999px; vertical-align: 1px;
+    }
+    .pill--ok { color: hsl(var(--ok)); box-shadow: inset 0 0 0 1px hsl(var(--ok) / 0.45); }
+    .pill--fail { color: hsl(var(--fail)); box-shadow: inset 0 0 0 1px hsl(var(--fail) / 0.45); }
+
+    .h-row {
+      display: grid; grid-template-columns: 11.5rem 1fr; gap: 0.85rem;
+      align-items: center; padding: 0.7rem 0; border-top: 1px solid;
+    }
+    .h-row:first-child { border-top: none; padding-top: 0.15rem; }
+    @media (max-width: 640px) { .h-row { grid-template-columns: 1fr; gap: 0.35rem; } }
+    .h-row__plot { display: flex; align-items: center; gap: 0.55rem; min-width: 0; }
+    .track { flex: 1; min-width: 0; height: 28px; border-radius: 4px; position: relative; overflow: hidden; }
+    .bar { height: 100%; border-radius: 2px 4px 4px 2px; min-width: 3px; position: relative; overflow: hidden; }
+    .bar--ok { background: hsl(var(--ok)); }
+    .bar--fail { background: hsl(var(--fail)); }
+    .bar--prov { background: hsl(var(--ok)); }
+    .bar--prov::after {
+      content: ""; position: absolute; inset: 0;
+      background: repeating-linear-gradient(-45deg, hsl(var(--ink-cream) / 0.45) 0 3px, transparent 3px 7px);
+    }
+    .val { font-size: 13px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; flex-shrink: 0; width: 3.4rem; text-align: right; }
+    .axis-row { display: flex; justify-content: space-between; padding: 0.35rem 3.95rem 0 12.35rem; font-size: 11px; font-weight: 600; }
+    .break { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 0 0 0.35rem 12.35rem; }
+
+    .lollipop .track { background: transparent; height: 22px; overflow: visible; }
+    .lollipop .stem {
+      position: absolute; left: 0; top: 50%; height: 3px; transform: translateY(-50%);
+      border-radius: 2px;
+    }
+    .lollipop .dot {
+      position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 3px hsl(var(--surface-cream));
+    }
+    html[data-wash="navy"] .lollipop .dot { box-shadow: 0 0 0 3px hsl(var(--brand-navy)); }
+    .stem--ok, .dot--ok { background: hsl(var(--ok)); }
+    .stem--fail, .dot--fail { background: hsl(var(--fail)); }
+    .stem--prov { background: hsl(var(--ok)); }
+    .dot--prov { background: hsl(var(--surface-cream)); box-shadow: 0 0 0 2px hsl(var(--ok)); }
+    html[data-wash="navy"] .dot--prov { background: hsl(var(--brand-navy)); }
+
+    .bars { position: relative; height: 320px; border-bottom: 1px solid; margin: 0.2rem 0 0.4rem; }
+    .bars .grid { position: absolute; inset: 0; }
+    .bars .gline { position: absolute; left: 0; right: 0; border-top: 1px solid; }
+    .ylab {
+      position: absolute; left: 0; width: 2.4rem; transform: translateY(-50%);
+      font-size: 11px; font-weight: 600; opacity: 0.6; text-align: right;
+    }
+    .bar-row {
+      position: absolute; left: 2.7rem; right: 0; top: 0; bottom: 0;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 0.6rem; padding: 0 0.4rem;
+    }
+    .col { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .col .val { width: auto; margin-bottom: 0.25rem; }
+    .col .bar { width: 42%; max-width: 44px; height: auto; border-radius: 4px 4px 2px 2px; }
+    .x-labels { display: flex; justify-content: space-between; gap: 0.6rem; padding: 0.7rem 0.4rem 0 2.7rem; }
+    .x { flex: 1; min-width: 0; text-align: center; }
+    .x img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; display: block; margin: 0 auto 0.3rem; }
+    .x__name { font-size: 12px; font-weight: 700; }
+
+    .footer {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.65rem;
+      margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid;
+      font-size: 12px; opacity: 0.72; line-height: 1.4;
+    }
+    .footer a { font-weight: 700; text-decoration: none; opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="chooser">
+    <h1>Reach comparison · five Index cards</h1>
+    <p>Reach 30d from the Agent Times, PubMed, SAP, Gateway, and Supabase cards. Four layouts of the same numbers. Pick one.</p>
+    <div class="row" role="group" aria-label="Wash">
+      <span>Wash</span>
+      <button type="button" data-wash-btn="navy">Navy</button>
+      <button type="button" class="is-on" data-wash-btn="light">Light (Abstract)</button>
+    </div>
+    <div class="row" role="group" aria-label="Design">
+      <span>Design</span>
+      <button type="button" data-style-btn="full">A · Full 0–100</button>
+      <button type="button" class="is-on" data-style-btn="zoom">B · Zoom 85–100</button>
+      <button type="button" data-style-btn="columns">C · Columns</button>
+      <button type="button" data-style-btn="lollipop">D · Lollipop</button>
+    </div>
+    <p class="nav-link"><a href="index.html">← Share cards</a> · <a href="reliability-frontier.html">Reliability charts →</a></p>
+  </div>
+
+  <div class="stage">
+    <div class="frame">
+      <div class="wash" aria-hidden="true">
+        <div class="wash__base"></div>
+        <img class="wash__img" src="hero-wash-site.jpg" alt="" />
+        <img class="wash__img wash__img--2" src="hero-wash-site.jpg" alt="" />
+        <div class="wash__veil"></div>
+      </div>
+      <article class="sheet">
+        <header class="top">
+          <div>
+            <h1>Reach 30d</h1>
+            <p class="claim" id="claim"></p>
+          </div>
+          <div class="brand">
+            <img class="logo--dark" src="agentstatus-wordmark-white.svg" alt="AgentStatus" />
+            <img class="logo--light" src="agentstatus-wordmark.svg" alt="AgentStatus" />
+          </div>
+        </header>
+        <div class="stats">
+          <div class="tile"><div class="k">Sample</div><div class="v">5</div><div class="s">Index cards</div></div>
+          <div class="tile"><div class="k">Spread</div><div class="v">10.0</div><div class="s">points, 100 to 90</div></div>
+          <div class="tile"><div class="k">Ceiling</div><div class="v">100%</div><div class="s">Agent Times</div></div>
+          <div class="tile"><div class="k">Floor</div><div class="v">90.0%</div><div class="s">Supabase</div></div>
+        </div>
+        <div class="legend">
+          <span><i class="swatch swatch--ok"></i>Healthy</span>
+          <span><i class="swatch swatch--fail"></i>Degraded</span>
+          <span><i class="swatch swatch--prov"></i>Provisional, under 20 runs</span>
+        </div>
+        <div class="plot-card">
+          <div id="plot"></div>
+          <p class="hint" id="hint"></p>
+        </div>
+        <footer class="footer">
+          <p>Reach = share of probes in 30 days that got a working session. Weight 35% of Score.</p>
+          <p><a href="https://agentstatus.dev/mcp-index">agentstatus.dev</a></p>
+        </footer>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    const FIRMS = [
+      { name: "Agent Times", reach: 100.0, status: "healthy", prov: true, runs: "3 of 20", logo: "logos/agent-times.png", hold: "P95 29s holds Score at 74.6 C" },
+      { name: "PubMed", reach: 96.2, status: "degraded", prov: false, runs: "B · #988", logo: "logos/pubmed.png", hold: "27% of tool calls failed" },
+      { name: "SAP", reach: 93.1, status: "degraded", prov: false, runs: "C · #1948", logo: "logos/sap.png", hold: "61% of tool calls failed" },
+      { name: "Gateway", reach: 91.2, status: "degraded", prov: false, runs: "B · #643", logo: "logos/gateway.png", hold: "19% of tool calls failed" },
+      { name: "Supabase", reach: 90.0, status: "degraded", prov: true, runs: "10 of 20", logo: "logos/supabase.png", hold: "42% of tool calls failed" },
+    ];
+    const CLAIMS = {
+      full: "All five clear <strong>90%</strong> Reach. On a 0–100 scale the set sits on the ceiling. Agent Times is the only <strong>100%</strong>.",
+      zoom: "Agent Times leads at <strong>100%</strong> Reach. PubMed 96.2, SAP 93.1, Gateway 91.2, Supabase 90.0. The spread is <strong>10 points</strong>.",
+      columns: "Agent Times scores <strong>100%</strong> Reach on 3 runs, so that mark stays provisional. Ranked cards in this set sit from PubMed <strong>96.2</strong> to Supabase <strong>90.0</strong>.",
+      lollipop: "Agent Times is the only full session in this set. The other four still clear <strong>90%</strong>. Degraded status is not a Reach miss.",
+    };
+    const HINTS = {
+      full: "Reach · Share of probes in 30 days that got a working session · Higher is better",
+      zoom: "Axis starts at 85% so a 10-point spread is readable · Higher is better",
+      columns: "Reach · Higher is better",
+      lollipop: "Reach · Higher is better · Axis 85% to 100%",
+    };
+
+    const root = document.documentElement;
+    const params = new URLSearchParams(location.search);
+    let wash = params.get("wash") === "navy" ? "navy" : "light";
+    let view = ["full", "zoom", "columns", "lollipop"].includes(params.get("style")) ? params.get("style") : "zoom";
+
+    function tone(s) {
+      if (s.prov) return "prov";
+      return s.status === "healthy" ? "ok" : "fail";
+    }
+    function pct(n) { return n.toFixed(1) + "%"; }
+    function pill(s) {
+      return s.status === "healthy"
+        ? '<span class="pill pill--ok">Healthy</span>'
+        : '<span class="pill pill--fail">Degraded</span>';
+    }
+    function firmHtml(s) {
+      return '<div class="firm"><img src="' + s.logo + '" alt="" /><div><div class="firm__name">' + s.name + pill(s) + '</div><div class="firm__meta">' + s.runs + (s.prov ? " · provisional" : "") + "</div></div></div>";
+    }
+    function width(s, min, max) {
+      return ((s.reach - min) / (max - min)) * 100;
+    }
+
+    function renderH(min, max, ticks, opts) {
+      const rows = FIRMS.slice();
+      let html = "";
+      if (opts && opts.break) html += '<div class="break">// axis starts at ' + min + "%</div>";
+      rows.forEach((s) => {
+        const t = tone(s);
+        const w = Math.max(2.2, width(s, min, max));
+        html += '<div class="h-row"><div>' + firmHtml(s) + '</div><div class="h-row__plot"><div class="track"><div class="bar bar--' + t + '" style="width:' + w + '%"></div></div><div class="val">' + pct(s.reach) + "</div></div></div>";
+      });
+      html += '<div class="axis-row axis">' + ticks.map((t) => "<span>" + t + "</span>").join("") + "</div>";
+      return html;
+    }
+
+    function renderLollipop() {
+      const min = 85, max = 100;
+      let html = '<div class="lollipop"><div class="break">// axis starts at 85%</div>';
+      FIRMS.forEach((s) => {
+        const t = tone(s);
+        const x = width(s, min, max);
+        html += '<div class="h-row"><div>' + firmHtml(s) + '</div><div class="h-row__plot"><div class="track"><div class="stem stem--' + t + '" style="width:' + x + '%"></div><div class="dot dot--' + t + '" style="left:' + x + '%"></div></div><div class="val">' + pct(s.reach) + "</div></div></div>";
+      });
+      html += '<div class="axis-row axis"><span>85%</span><span>90</span><span>95</span><span>100</span></div></div>';
+      return html;
+    }
+
+    function renderColumns() {
+      const yMin = 85, yMax = 102;
+      const ticks = [85, 90, 95, 100];
+      let grid = "";
+      ticks.forEach((t) => {
+        const top = ((yMax - t) / (yMax - yMin)) * 100;
+        grid += '<div class="gline" style="top:' + top + '%"></div><span class="ylab" style="top:' + top + '%">' + t + "</span>";
+      });
+      let cols = "", labs = "";
+      FIRMS.forEach((s) => {
+        const h = ((s.reach - yMin) / (yMax - yMin)) * 100;
+        const t = tone(s);
+        cols += '<div class="col"><div class="val">' + pct(s.reach) + '</div><div class="bar bar--' + t + '" style="height:' + h + '%"></div></div>';
+        labs += '<div class="x"><img src="' + s.logo + '" alt="' + s.name + '" /><div class="x__name">' + s.name + "</div></div>";
+      });
+      return '<div class="bars"><div class="grid">' + grid + '</div><div class="bar-row">' + cols + '</div></div><div class="x-labels">' + labs + "</div>";
+    }
+
+    function render() {
+      root.setAttribute("data-wash", wash);
+      root.setAttribute("data-style", view);
+      document.querySelectorAll("[data-wash-btn]").forEach((b) => b.classList.toggle("is-on", b.dataset.washBtn === wash));
+      document.querySelectorAll("[data-style-btn]").forEach((b) => b.classList.toggle("is-on", b.dataset.styleBtn === view));
+      document.getElementById("claim").innerHTML = CLAIMS[view];
+      document.getElementById("hint").textContent = HINTS[view];
+      const plot = document.getElementById("plot");
+      if (view === "full") plot.innerHTML = renderH(0, 100, ["0", "25", "50", "75", "100"]);
+      else if (view === "zoom") plot.innerHTML = renderH(85, 100, ["85%", "90", "95", "100"], { break: true });
+      else if (view === "columns") plot.innerHTML = renderColumns();
+      else plot.innerHTML = renderLollipop();
+      document.title = "MCP Index · Reach comparison · " + view;
+    }
+
+    document.querySelectorAll("[data-wash-btn]").forEach((b) => {
+      b.addEventListener("click", () => { wash = b.dataset.washBtn; render(); });
+    });
+    document.querySelectorAll("[data-style-btn]").forEach((b) => {
+      b.addEventListener("click", () => { view = b.dataset.styleBtn; render(); });
+    });
+    render();
+  </script>
+</body>
+</html>
