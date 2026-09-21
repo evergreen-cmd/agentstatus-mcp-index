@@ -161,7 +161,8 @@
     .bar--ok { background: hsl(var(--ok)); }
     .bar--fail { background: hsl(var(--fail)); }
     .bar--prov { background: hsl(var(--ok)); }
-    .bar--prov::after {
+    .bar--prov-fail { background: hsl(var(--fail)); }
+    .bar--prov::after, .bar--prov-fail::after {
       content: ""; position: absolute; inset: 0;
       background: repeating-linear-gradient(-45deg, hsl(var(--ink-cream) / 0.45) 0 3px, transparent 3px 7px);
     }
@@ -183,8 +184,11 @@
     .stem--ok, .dot--ok { background: hsl(var(--ok)); }
     .stem--fail, .dot--fail { background: hsl(var(--fail)); }
     .stem--prov { background: hsl(var(--ok)); }
+    .stem--prov-fail { background: hsl(var(--fail)); }
     .dot--prov { background: hsl(var(--surface-cream)); box-shadow: 0 0 0 2px hsl(var(--ok)); }
-    html[data-wash="navy"] .dot--prov { background: hsl(var(--brand-navy)); }
+    .dot--prov-fail { background: hsl(var(--surface-cream)); box-shadow: 0 0 0 2px hsl(var(--fail)); }
+    html[data-wash="navy"] .dot--prov,
+    html[data-wash="navy"] .dot--prov-fail { background: hsl(var(--brand-navy)); }
 
     .bars { position: relative; height: 320px; border-bottom: 1px solid; margin: 0.2rem 0 0.4rem; }
     .bars .grid { position: absolute; inset: 0; }
@@ -302,7 +306,7 @@
     let view = ["full", "zoom", "columns", "lollipop"].includes(params.get("style")) ? params.get("style") : "zoom";
 
     function tone(s) {
-      if (s.prov) return "prov";
+      if (s.prov) return s.status === "healthy" ? "prov" : "prov-fail";
       return s.status === "healthy" ? "ok" : "fail";
     }
     function pct(n) { return n.toFixed(1) + "%"; }
